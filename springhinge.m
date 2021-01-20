@@ -27,11 +27,11 @@ endAngle = atan2(y(end,:)-y(end-1,:),x(end,:)-x(end-1,:))*180/pi;
 endVect = [y(end, :);x(end, :)];
 appTorque = R.*sqrt(endVect(1,:).^2+endVect(2,:).^2).*sind(psi(1,:)-endAngle);
 
-subplot(2,2,4);
-plot(endAngle, appTorque);
-title("Torque vs angle");
-xlabel(" Bend Angle from static (deg)");
-ylabel("Torque (Nm)");
+% subplot(2,2,4);
+% plot(endAngle, appTorque);
+% title("Torque vs angle");
+% xlabel(" Bend Angle from static (deg)");
+% ylabel("Torque (Nm)");
 
 %%torsional approximation: page 77/68 real in handbook of compliant
 %%mechanisms
@@ -70,6 +70,34 @@ end
 K = gamma.*K_t*E*I/L;
 
 P = R./sqrt(1+n.^2);
+
+%% Torque Attempt 1 using torsional stiffness * displacement angle
+torque = zeros(size(psi));
+prba = zeros(size(psi));
+for i = 1:length(gamma)
+    syms theta
+    % Equation: A.17
+    eqn = P(i) == K(i)*theta/(gamma(i)*L*(cos(theta)+n(i)*sin(theta)));
+    prba(i) = solve(eqn, theta);  % pseduo-rigid body angle
+    torque(i) = prba(i) * K(i); % torque
+end
+subplot(2,2,4);
+plot(torque, 'b.');
+title("Torque vs Config");
+xlabel("Configurations");
+ylabel("Torque (Nm)");
+
+%% Torque Attempt 2 using moment arm * force
+torque = zeros(size(psi));
+moment_arm_length = zeros(size(psi));
+for i = 1:length(gamma)
+    moment_arm_length(i) = sqrt(a(i)^2 + b(i)^2);
+    torque(i) = moment_arm_length(i) * R(i) * cos(90 - prba(i) - 45);
+end
+hold on;
+grid on;
+plot(torque, 'r.');
+legend('K*theta', 'Force*arm');
 
 stress = P.*(x(end,:)+n.*y(end,:))*(t/2)/I - n.*P/(t*b);
 
