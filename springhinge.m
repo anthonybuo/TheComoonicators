@@ -118,6 +118,19 @@ torque = dot(deflection, [K_t1 K_t2 K_t3]);
 hold on;
 plot(35, torque, 'gx');
 
+%% Torque Attempt 4 using applied moment only (case A.1.5 in compliant mechanisms handbook)
+
+M = 1.25;
+b = 0.28;
+t = 0.01*0.0254;
+L = 0.1;
+
+[a_moment, b_moment, theta_moment, K_moment, sigmax_moment] = momentOnly(L, E, b*t^3/12, M, t);
+
+safety_factor = Y/sigmax_moment
+K_moment
+theta_moment
+
 %% Stress
 stress = P.*(x(end,:)+n.*y(end,:))*(t/2)/I - n.*P/(t*b);
 
@@ -136,6 +149,17 @@ xlabel("Configurations");
 ylim([0,10]);
 hold off;
 
+%%
+function [a, b, theta, K, sigmax] = momentOnly(L, E, I, M, t)
+K = 1.5164*E*I/L;
+theta = M/K;
+
+a = L*(1-0.7346*(1-cos(theta)));
+b = 0.7346*L*sin(theta);
+theta = theta*1.5164*180/pi; %yes this is dumb but it should be theta and Theta
+sigmax = M*t/2/I;
+K = K/180*pi;
+end
 %%
 % for col = 1:size(x,2)
 %     
