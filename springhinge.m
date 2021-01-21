@@ -1,6 +1,11 @@
+global L
+global R
+global E
+global I
+
 L = 0.1;
 Y = 570E6; %As-rolled 1095 https://www.theworldmaterial.com/sae-aisi-1095-high-carbon-steel/
-E = 110E9; %https://www.theworldmaterial.com/sae-aisi-1095-high-carbon-steel/
+E = 210E9; %https://www.theworldmaterial.com/sae-aisi-1095-high-carbon-steel/
 t = 0.005*0.0254;
 b = 0.28;
 I = b*t^3/12;
@@ -9,7 +14,7 @@ cog = 0.28/2;
 m = 1.65;
 g = 1.62;
 
-R = [0.1:0.1:3.5]; %Force vector
+R = [0.1:0.1:3.5]; %#ok<NBRAK> %Force vector
 psi = 135*ones(size(R)); %force angle vector (degrees)
 numputs = 1000;
 
@@ -78,8 +83,8 @@ for i = 1:length(gamma)
     syms theta
     % Equation: A.17
     eqn = P(i) == K(i)*theta/(gamma(i)*L*(cos(theta)+n(i)*sin(theta)));
-    prba(i) = solve(eqn, theta);  % pseduo-rigid body angle
-    torque(i) = prba(i) * K(i); % torque
+    prba(i) = vpasolve(eqn, theta);
+    torque(i) = prba(i) * K(i);
 end
 subplot(2,2,4);
 plot(torque, 'b.');
@@ -99,6 +104,21 @@ grid on;
 plot(torque, 'r.');
 legend('K*theta', 'Force*arm');
 
+%% Torque Attempt 3 using combo moment and force
+% Only calculating for configuration #35
+
+% "Simulated Annealing Algorithm for Modeling Large Deflection of Flexible
+% Links in Compliant Mechanisms" Eq. 4
+PRB_3R_fn = @PRB_3R;
+x0 = [0, 0, 0];
+options = optimset('Display','off');
+deflection = fsolve(PRB_3R_fn, x0, options);
+torque = dot(deflection, [K_t1 K_t2 K_t3]);
+
+hold on;
+plot(35, torque, 'gx');
+
+%% Stress
 stress = P.*(x(end,:)+n.*y(end,:))*(t/2)/I - n.*P/(t*b);
 
 subplot(2,2,2);
@@ -106,7 +126,6 @@ hold on
 plot(stress);
 ylabel("Stress (Pa)");
 hold off
-
 
 subplot(2,2,3);
 hold on
@@ -116,7 +135,6 @@ ylabel("Factor of Safety");
 xlabel("Configurations");
 ylim([0,10]);
 hold off;
-
 
 %%
 % for col = 1:size(x,2)
@@ -141,3 +159,31 @@ hold off;
 %     ylim([0,10]);
 %     hold off;
 % end
+
+% Computes the angular deflection of each link in the PRB 3R model using
+% "Simulated Annealing Algorithm for Modeling Large Deflection of Flexible
+% Links in Compliant Mechanisms" Eq. 4
+function F = PRB_3R(x)
+    global L
+    global R
+    global E
+    global I
+    
+    % Table A.5.3, Chen coefficients
+    gamma1 = 0.351;
+    gamma2 = 0.388;
+    gamma3 = 0.136;
+    K_t1 = 3.25;
+    K_t2 = 2.84;
+    K_t3 = 2.95;
+    
+    % "Simulated Annealing Algorithm for Modeling Large Deflection of Flexible
+    % Links in Compliant Mechanisms" Eq. 2
+    M0 = 3.5*0.15;  % 3.5N @ 150mm
+    alpha = sqrt(L^2*R(end)/(E*I));
+    k = M0^2/(2*R(end)*E*I);
+
+    F(1) = K_t1*x(1) - gamma3*cos(x(1)+x(2)+x(3))*alpha^2 - M0*L/E/I;
+    F(2) = K_t2*x(2) - gamma2*cos(x(1)+x(2)) - gamma3*cos(x(1)+x(2)+x(3))*alpha^2 - M0*L/E/I;
+    F(3) = K_t3*x(3) - gamma1*cos(x(1)+x(2)) - gamma2*cos(x(1)+x(2)) - gamma3*cos(x(1)+x(2)+x(3))*alpha^2 - M0*L/E/I;
+end
