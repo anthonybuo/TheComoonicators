@@ -7,7 +7,7 @@
 % compared to the elliptic integral method for a bend angle of 45 degrees,
 % L = 0.1, t = 0.005 in, b = 0.28. 
 
-L = 0.075;
+L = 0.078;
 Y = 570E6; %As-rolled 1095 https://www.theworldmaterial.com/sae-aisi-1095-high-carbon-steel/
 E = 210E9; %https://www.theworldmaterial.com/sae-aisi-1095-high-carbon-steel/
 t = 0.005*0.0254;
@@ -58,7 +58,7 @@ end
 
 K_force = gamma.*K_t*E*I/L;
 
-c_theta = interp1(n_vs_c_theta(1,:), n_vs_c_theta(2,:), n);
+c_theta = interp1(n_vs_c_theta(1,:), n_vs_c_theta(2,:), n); %this could be implemented wrong
 
 tempangle = bendangle./c_theta*pi/180;
 
@@ -68,8 +68,8 @@ a_force = L*(1-gamma.*(1-cos(tempangle)));
 b_force = gamma.*L.*sin(tempangle);
 
 stressmax_force = ones(2, length(gamma));
-stressmax_force(1,:) = abs(P.*(a_force + n.*b)*t/2/I - n.*P/(b*t));
-stressmax_force(2,:) = abs(-P.*(a_force + n.*b)*t/2/I - n.*P/(b*t));
+stressmax_force(1,:) = abs(P.*(a_force + n.*b_force)*t/2/I - n.*P/(b*t));
+stressmax_force(2,:) = abs(-P.*(a_force + n.*b_force)*t/2/I - n.*P/(b*t));
 
 
 safety_factor_force = ones(size(gamma));
@@ -77,7 +77,7 @@ for index = 1:length(safety_factor_force)
     safety_factor_force(index) = Y/max(stressmax_force(:,index));
 end
 
-K_force = K_force*pi/180;
+K_force = K_force*pi/180./c_theta; %need to convert K's according to real and pseude angle scale factor c_theta
 
 %% Moment
 
@@ -86,13 +86,15 @@ M = K_moment*bendangle*pi/180;
 
 a_moment = L*(1-0.7346*(1-cosd(bendangle/1.5164)));
 b_moment = 0.7346*L*sind(bendangle/1.5164);
-stressmax_moment = M*t/2/I;
+stressmax_moment = M*(t/2)/I;
 K_moment = K_moment/180*pi;
 
 safety_factor_moment = Y/stressmax_moment;
-K_moment; %Nm per degree
+K_moment = K_moment / 1.5164;
 
-
+%K_rigidbody * tehta_rigidbody = K_real*theta_real
+%                              = K_real*theta_rigidbody*1.5164
+%  K_rigidbody/1.5164          = K_real
 %% present results
 subplot(1,3,1);
 sgtitle("L = " + L + "m, b = " + b + "m, t = " + t*1000 + "mm, Bend Angle = " + bendangle + " degrees");
@@ -111,6 +113,6 @@ legend("Force", "Moment", "Target Spring Constant");
 
 subplot(1,3,3);
 plot(psi, a_force, psi, a_moment*ones(size(psi)), psi, height_limit*ones(size(psi)), '*');
-xlabel("Applied force angle (degrees)");
+xlabel("Compressed Height (m)");
 ylabel("bent spring height");
 legend("Force", "Moment", "Height limit");
