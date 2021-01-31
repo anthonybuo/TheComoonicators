@@ -32,8 +32,8 @@ VB+ output -> green
 
 ### Power Supply -> Motor Driver Board
 
-+ -> VB+
+\+ -> VB+
 
-- -> VB-
+\- -> VB-
 
 
