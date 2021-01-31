@@ -35,10 +35,10 @@ void TIMER1_init(void) {
   TCCR1A = 0;
   TCCR1B = 0;
   TCNT1  = 0;
-  OCR1A = timer1_interrupt_ticks;      // compare match register 16MHz/256/2Hz
-  TCCR1B |= (1 << WGM12);   // CTC mode
-  TCCR1B |= (1 << CS12);    // 256 prescaler
-  TIMSK1 |= (1 << OCIE1A);  // enable timer compare interrupt
+  OCR1A = timer1_interrupt_ticks; // compare match register
+  TCCR1B |= (1 << WGM12);         // CTC mode
+  TCCR1B |= (1 << CS12);          // 256 prescaler
+  TIMSK1 |= (1 << OCIE1A);        // enable timer compare interrupt
 }
 
 void setup() {
@@ -52,16 +52,22 @@ ISR(TIMER1_COMPA_vect) {
   static int i = 0;
   static float stepper_position_deg = 0;
   static int direction = 1;
+
+  // Stepper command
   digitalWrite(STEPPER_LEAD_0, half_step[i][0]);
   digitalWrite(STEPPER_LEAD_1, half_step[i][1]);
   digitalWrite(STEPPER_LEAD_2, half_step[i][2]);
   digitalWrite(STEPPER_LEAD_3, half_step[i][3]);
+
+  // Update position and direction
   stepper_position_deg += direction * STEP_ANGLE_DEG / 2;
   if (stepper_position_deg >= 360) {
     direction = -1;
   } else if (stepper_position_deg <= 0) {
     direction = 1;
   }
+
+  // Update counter
   i += direction;
   if (i < 0) {
     i = NUM_STEPPER_INSTR - 1;
