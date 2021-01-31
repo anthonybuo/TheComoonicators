@@ -1,25 +1,4 @@
-function [a,b,x,y,M1] = fpbeambending(R,psi,L,E,I,numpts)
-%This function finds the deflection of a fixed-pinned beam using elliptic
-%integrals. 
-% Inputs:
-% R - a vector with values for force
-% psi - a vector (same size as R) with values for force direction, in
-% degrees
-% L - Length of the beam (scalar)
-% E - Young's modulus of the beam (scalar)
-% I - Second moment of area of the beam's cross section (scalar)
-% numpts - a scalar value giving the number of points to include in x and y
-%
-% Outputs:
-% a - the horizontal component of the beam's end (a vector the length of R)
-% b - the vertical component of the beam's end (a vector the length of R)
-% x - a matrix (numpts rows and as many columns as the length of R) giving
-% horizontal components for points along the beam's shape
-% y - a matrix the same size as x givng vertical components for points
-% along the beam's shape
-% M1 - the moment reaction at the fixed end of the beam (a vector the
-% length of R)
-
+function [a,b,x,y,M1] = mombeambending(R,psi,M,L,E,I,numpts)
 psi = psi*pi/180; %convert to radians
 alpha = R*L^2/(E*I);
 k = zeros(size(alpha));
@@ -28,7 +7,8 @@ for counter = 1:length(alpha)
     k(counter) = fzero(@alphaeq,[abs(cos(psi(counter)/2)) 1-eps],[],alpha(counter),psi(counter));
 end
 phi1 = asin(cos(psi/2)./k);
-phi2 = pi/2*ones(size(phi1));
+phi2 = acos(M./(2*k.*sqrt(E*I*R))); %only line that changed
+%should be OK to here
 [f1,e1] = elliptic12(phi1,k.^2);
 [f2,e2] = elliptic12(phi2,k.^2);
 a = -(cos(psi).*(f1 - f2 + 2*(e2 - e1)) + ...
@@ -43,16 +23,32 @@ x = x*L;
 y = y*L;
 M1 = beta1*E*I/L;
 
-
 function eqout = alphaeq(k,alpha,psi)
-phi1 = asin(cos(psi/2)/k);
+global M
+global E
+global I
+global R
+phi1 = asin(cos(psi/2)/k); %eq 4.5
 if isreal(phi1)
 else phi1 = pi/2;
 end
-phi2 = pi/2;
+phi2 = acos(M./(2*k.*sqrt(E*I*R))); %eq 4.6
+if isreal(phi2)
+else phi2 = pi/2;
+end
 [f1,e1] = elliptic12(phi1,k.^2);
 [f2,e2] = elliptic12(phi2,k.^2);
 eqout = f2 - f1 - sqrt(alpha);
+
+% function eqout = alphaeq(k,alpha,psi)
+% phi1 = asin(cos(psi/2)/k); %eq 4.5
+% if isreal(phi1)
+% else phi1 = pi/2;
+% end
+% phi2 = pi/2; %for fixed beam only
+% [f1,e1] = elliptic12(phi1,k.^2);
+% [f2,e2] = elliptic12(phi2,k.^2);
+% eqout = f2 - f1 - sqrt(alpha);
 
 
 function [x,y,s,beta,theta] = guidedbeamshape(psi,phi1,phi2,k,alpha,f1,e1,npts)
