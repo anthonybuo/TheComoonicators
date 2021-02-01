@@ -22,7 +22,7 @@
 
 // Accelerometer
 LIS3DHTR<TwoWire> LIS;
-float accel_x, accel_y, accel_z;
+float accel_x_g, accel_y_g, accel_z_g;
 
 // Half stepping lookup
 const int half_step[NUM_STEPPER_INSTR][NUM_STEPPER_LEADS] = {
@@ -72,6 +72,7 @@ void ACCEL_init(void) {
   LIS.begin(WIRE, LIS3DHTR_ADDRESS_UPDATED);
   delay(100);
   LIS.setOutputDataRate(LIS3DHTR_DATARATE_50HZ);
+  LIS.setFullScaleRange(LIS3DHTR_RANGE_2G);
   if (!LIS) {
     Serial.println("LIS3DHTR didn't connect.");
     while (1);
@@ -130,10 +131,10 @@ void setup() {
 // Arduino main loop
 void loop() {
   // Display accelerometer data
-  LIS.getAcceleration(&accel_x, &accel_y, &accel_z);
-  Serial.print(accel_x); Serial.print(" ");
-  Serial.print(accel_y); Serial.print(" ");
-  Serial.print(accel_z); Serial.print(" ");
+  LIS.getAcceleration(&accel_x_g, &accel_y_g, &accel_z_g);
+  Serial.print(accel_x_g); Serial.print(" ");
+  Serial.print(accel_y_g); Serial.print(" ");
+  Serial.print(accel_z_g); Serial.print(" ");
   Serial.println("");
 
   // Limit switch debounce if necessary
