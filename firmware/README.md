@@ -1,5 +1,11 @@
 # Firmware for Directional Antenna
 
+## Environment
+
+Set your Arduino sketchbook location to this directory. Install the following Arduino libraries:
+
+* LIS3DHTR
+
 ## Pinout
 
 ### Arduino -> Motor Driver Board
@@ -35,5 +41,11 @@ VB+ output -> green
 \+ -> VB+
 
 \- -> VB-
+
+### Limit Switch -> Arduino
+
+C  -> GND
+
+NC -> GPIO 2
 
 
