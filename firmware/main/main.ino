@@ -104,7 +104,6 @@ void ISR_limit_switch(void) {
   detachInterrupt(digitalPinToInterrupt(LIMIT_SWITCH_PIN));  // debounce
   limit_switch_interrupt_active = false;
   reattach_interrupt_time_ms = millis() + 1000;
-  // Serial.println("LIMIT SWITCH ISR!!");
   stepper_direction *= -1;
 }
 
@@ -153,7 +152,7 @@ void loop() {
   // Sample current sensor
   current = (analogRead(A0) - CURRENT_SENSOR_OFFSET_TICKS);  // current in ticks
   current *= (ADC_RANGE_V / ADC_WIDTH);  // current in V
-  current *= CURRENT_SENSOR_SENSITVITY_A_PER_V;  // current in 
+  current *= CURRENT_SENSOR_SENSITVITY_A_PER_V;  // current in A
   Serial.print(current, 5); Serial.println("A");
 
   // Limit switch debounce if necessary
