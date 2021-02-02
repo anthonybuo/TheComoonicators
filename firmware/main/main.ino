@@ -14,6 +14,13 @@
 // Limit switch constants
 #define LIMIT_SWITCH_PIN 2U
 
+// Current sensor constants
+#define CURRENT_SENSOR_PIN                 A0
+#define CURRENT_SENSOR_OFFSET_TICKS        309
+#define CURRENT_SENSOR_SENSITVITY_A_PER_V  5
+#define ADC_RANGE_V                        5.0
+#define ADC_WIDTH                          1024
+
 // Timer1 Constants
 #define TIMER1_ISR_PERIOD_MS           1.0
 #define TIMER1_PRESCALER               256
@@ -23,6 +30,9 @@
 // Accelerometer
 LIS3DHTR<TwoWire> LIS;
 float accel_x_g, accel_y_g, accel_z_g;
+
+// Current sensor
+float current;
 
 // Half stepping lookup
 const int half_step[NUM_STEPPER_INSTR][NUM_STEPPER_LEADS] = {
@@ -42,6 +52,10 @@ volatile int stepper_direction = 1;
 volatile bool limit_switch_interrupt_active = true;
 // When to reattach the limit switch interrupt in ms since program start
 volatile long reattach_interrupt_time_ms = 0;
+// Target number of rotations for the stepper
+volatile int stepper_target_position_rot = 0;
+// Current stepper position
+volatile float stepper_position_deg = 0;
 
 // Initializes stepper control outputs
 void STEPPER_init(void) {
@@ -83,7 +97,6 @@ void ACCEL_init(void) {
 void LIMIT_SWITCH_init(void) {
   pinMode(LIMIT_SWITCH_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(LIMIT_SWITCH_PIN), ISR_limit_switch, RISING);
-  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 // Limit switch ISR triggered on switch press
@@ -98,7 +111,11 @@ void ISR_limit_switch(void) {
 // Timer1 ISR
 ISR(TIMER1_COMPA_vect) {
   static int i = 0;
-  static float stepper_position_deg = 0;
+
+  // Quit if at setpoint
+  if (stepper_position_deg == (stepper_target_position_rot * 360)) {
+    return;
+  }
 
   // Stepper command
   digitalWrite(STEPPER_LEAD_0, half_step[i][0]);
@@ -106,8 +123,8 @@ ISR(TIMER1_COMPA_vect) {
   digitalWrite(STEPPER_LEAD_2, half_step[i][2]);
   digitalWrite(STEPPER_LEAD_3, half_step[i][3]);
 
-  // Update position and stepper_direction
-  stepper_position_deg += stepper_direction * STEP_ANGLE_DEG / 2;
+  // Update position
+  stepper_position_deg += (stepper_direction * STEP_ANGLE_DEG / 2);
 
   // Update counter
   i += stepper_direction;
@@ -119,7 +136,7 @@ ISR(TIMER1_COMPA_vect) {
 
 // Arduino setup
 void setup() {
-  ACCEL_init();  // needs interrupts on for I2C init
+  ACCEL_init();
   noInterrupts();
   SERIAL_init();
   LIMIT_SWITCH_init();
@@ -130,12 +147,14 @@ void setup() {
 
 // Arduino main loop
 void loop() {
-  // Display accelerometer data
+  // Sample accelerometer
   LIS.getAcceleration(&accel_x_g, &accel_y_g, &accel_z_g);
-  Serial.print(accel_x_g); Serial.print(" ");
-  Serial.print(accel_y_g); Serial.print(" ");
-  Serial.print(accel_z_g); Serial.print(" ");
-  Serial.println("");
+
+  // Sample current sensor
+  current = (analogRead(A0) - CURRENT_SENSOR_OFFSET_TICKS);  // current in ticks
+  current *= (ADC_RANGE_V / ADC_WIDTH);  // current in V
+  current *= CURRENT_SENSOR_SENSITVITY_A_PER_V;  // current in 
+  Serial.print(current, 5); Serial.println("A");
 
   // Limit switch debounce if necessary
   if (millis() > reattach_interrupt_time_ms && !limit_switch_interrupt_active) {
@@ -144,5 +163,27 @@ void loop() {
     limit_switch_interrupt_active = true;
   }
 
-  delay(1000);
+  // Get stepper command from user over serial
+  if (Serial.available()) {
+    unsigned char serial_data = Serial.read();
+    if (serial_data == '-') {
+      stepper_target_position_rot = (Serial.read() - '0') * -1;
+    } else {
+      stepper_target_position_rot = (serial_data - '0');
+    }
+    Serial.print("New stepper command: ");
+    Serial.println(stepper_target_position_rot, DEC);
+    stepper_direction = stepper_position_deg < (stepper_target_position_rot * 360) ? 1 : -1;
+  }
+
+  // Set stepper to idle if setpoint reached
+  if (stepper_position_deg == (stepper_target_position_rot * 360)) {
+    // Unipolar stepper with center tap held high needs all leads high when idle
+    digitalWrite(STEPPER_LEAD_0, HIGH);
+    digitalWrite(STEPPER_LEAD_1, HIGH);
+    digitalWrite(STEPPER_LEAD_2, HIGH);
+    digitalWrite(STEPPER_LEAD_3, HIGH);
+  }
+
+  delay(100);
 }

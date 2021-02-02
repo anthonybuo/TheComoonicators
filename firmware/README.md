@@ -6,6 +6,8 @@ Set your Arduino sketchbook location to this directory. Install the following Ar
 
 * LIS3DHTR
 
+Select the "no line ending" option on the Arduino serial monitor.
+
 ## Pinout
 
 ### Arduino -> Motor Driver Board
