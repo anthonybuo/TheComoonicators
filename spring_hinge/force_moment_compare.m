@@ -7,11 +7,13 @@
 % compared to the elliptic integral method for a bend angle of 45 degrees,
 % L = 0.1, t = 0.005 in, b = 0.28. 
 
-L = 0.078;
+L = 0.078;  
 Y = 570E6; %As-rolled 1095 https://www.theworldmaterial.com/sae-aisi-1095-high-carbon-steel/
 E = 210E9; %https://www.theworldmaterial.com/sae-aisi-1095-high-carbon-steel/
-t = 0.005*0.0254;
-b = 0.28;
+%E = 28E9; %nitinol
+%Y = 140E6; %nitinol
+t = 0.01*0.0254;
+b = 0.29;
 I = b*t^3/12;
 target_K = 20E-3; %Nm/deg
 target_SF = 1;
@@ -21,6 +23,8 @@ bendangle = 90; %degrees
 
 n_vs_c_theta = [0.0 0.5 1.0 1.5 2.0 3.0 4.0 5.0 7.5 10.0 -0.5 -1.0 -1.5 -2.0 -3.0 -4.0 -5.0;...
     1.2385 1.2430 1.2467 1.2492 1.2511 1.2534 1.2548 1.2557 1.2570 1.2578 1.2348 1.2323 1.2322 1.2293 1.2119 1.1971 1.1788];
+% from https://asmedigitalcollection-asme-org.ezproxy.library.ubc.ca/mechanicaldesign/article/117/1/156/417714/Parametric-Deflection-Approximations-for-End
+
 
 
 %% Force
