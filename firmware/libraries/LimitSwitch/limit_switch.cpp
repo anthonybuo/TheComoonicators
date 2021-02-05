@@ -11,10 +11,10 @@ void LimitSwitch::init(unsigned int output_pin, void (*isr)(void)) {
 void LimitSwitch::reenable_interrupt(void) {
     // Clear all pending interrupts on this pin, otherwise they will be triggered
     // immediate after re-attaching the interrupt
-    if (output_pin_ == 2U) {
-      EIFR |= (1 << INTF4);
-    } else if (output_pin_ == 3U) {
-      EIFR |= (1 << INTF5);
+    if (output_pin_ == 18U) {
+      EIFR |= (1 << INTF3);
+    } else if (output_pin_ == 19U) {
+      EIFR |= (1 << INTF2);
     }
     attachInterrupt(digitalPinToInterrupt(output_pin_), isr_, RISING);
     debounce_active_ = false;

@@ -7,8 +7,8 @@
 #define STEPPER_LEAD_1     5U
 #define STEPPER_LEAD_2     6U
 #define STEPPER_LEAD_3     7U
-#define LIMIT_SWITCH_PIN   2U
-#define LIMIT_SWITCH_2_PIN 3U
+#define LIMIT_SWITCH_1_PIN 18U
+#define LIMIT_SWITCH_2_PIN 19U
 
 // Timer1 Constants
 #define TIMER1_ISR_PERIOD_MS           1.0
@@ -59,7 +59,7 @@ void setup() {
   Serial.begin(115200);
 
   // Limit switches
-  switch1.init(LIMIT_SWITCH_PIN, ISR_limit_switch1);
+  switch1.init(LIMIT_SWITCH_1_PIN, ISR_limit_switch1);
   switch2.init(LIMIT_SWITCH_2_PIN, ISR_limit_switch2);
 
   // Stepper motor
