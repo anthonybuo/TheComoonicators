@@ -3,10 +3,10 @@
 #include "stepper.h"
 
 // Pinout
-#define STEPPER_LEAD_0     4U
-#define STEPPER_LEAD_1     5U
-#define STEPPER_LEAD_2     6U
-#define STEPPER_LEAD_3     7U
+#define STEPPER_LEAD_0     3U
+#define STEPPER_LEAD_1     2U
+#define STEPPER_LEAD_2     5U
+#define STEPPER_LEAD_3     6U
 #define LIMIT_SWITCH_1_PIN 18U
 #define LIMIT_SWITCH_2_PIN 19U
 

@@ -18,10 +18,10 @@ void Stepper::tick(void) {
   }
 
   // Stepper command
-  digitalWrite(pin1_, half_step[i][0]);
-  digitalWrite(pin2_, half_step[i][1]);
-  digitalWrite(pin3_, half_step[i][2]);
-  digitalWrite(pin4_, half_step[i][3]);
+  analogWrite(pin1_, half_step[i][0] * 255);
+  analogWrite(pin2_, half_step[i][1] * 255);
+  analogWrite(pin3_, half_step[i][2] * 255);
+  analogWrite(pin4_, half_step[i][3] * 255);
 
   // Update position
   stepper_position_deg += (stepper_direction * step_angle_deg / 2);
@@ -36,9 +36,9 @@ void Stepper::tick(void) {
 
 void Stepper::idle(void) {
     // Specific to unipolar configuration
-    digitalWrite(pin1_, HIGH);
-    digitalWrite(pin2_, HIGH);
-    digitalWrite(pin3_, HIGH);
-    digitalWrite(pin4_, HIGH);
+    analogWrite(pin1_, 255);
+    analogWrite(pin2_, 255);
+    analogWrite(pin3_, 255);
+    analogWrite(pin4_, 255);
 }
 
