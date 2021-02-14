@@ -14,6 +14,11 @@ theta0_in = [360, 270, 225, 180, 120] * pi/180;
 [T, theta0] = meshgrid(T_in, theta0_in); %undeformed spring angle, in radians; max spring load in in-lbs. These are values provided by mcmc
 
 %find spring constant in Nm/rad for calculations
+T = 21.28;  % from selected spring 9271K951
+preload_angle = 28.5;  % from CAD
+default_angle = 120;  % from selected spring 9271K951
+theta0 = deg2rad(default_angle + preload_angle);
+
 K = T*0.11298482933333./theta0;
 
 % earthMass = m * g/9.81;
@@ -23,7 +28,6 @@ K = T*0.11298482933333./theta0;
 % inertialD = 0.025;
 % rho = 7800;
 % steelLen = 2*requiredI./(pi*(inertialD/2).^4.*rho);
-
 BW = sqrt(K./realI);
 
 % motor characteristics
