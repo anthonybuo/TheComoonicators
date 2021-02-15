@@ -135,8 +135,33 @@ s = surf(theta0*180/pi, T, danger_disturbance);
 hold on
 xlabel("Undeformed Position, degrees");
 ylabel("Torque at full deformed, in-lbs");
-zlabel("Disturbance torque (Nm)");
+zlabel("Disturbance torque (Nm), Disturbance Shock (m/s^2)");
 title("Disturbance torque causing slack in line")
 s.EdgeColor = 'none';
 s = surf(theta0*180/pi, T, slack_shock);
 legend(["Disturbance torque", "Rover Body Shock (edges)"]);
+
+%% 
+% fifth plot shows power consumption and disturbance withstance over all
+% elevation angles for chosen spring
+
+theta0 = 270*pi/180;
+K = 22.5*2*0.11298482933333./theta0;
+tension = (theta0 - theta).*K./(L/2*sin(pi/2-theta/2)); %N, min cable tension, at top, but not perpendicular to plane. No gravity torque 
+motor_torque = tension*pulley_radius; % Nm, torque required to hold antenna full closed
+motor_current = motor_torque/T_max*I_max; % Amps, current required to hold antenna fully closed. Assumes that it will be proportional to ratio between required torque and stall torque at 12V. 
+motor_power = V.*(motor_current./I_max).*motor_current; % W, power draw to hold position. Same as above, voltage scales down by proportion of required current and max current.
+spring_torque = (theta0 - theta).*K;
+gravity_torque = m*g*L/2*sin(theta);
+
+figure; 
+hold on
+yyaxis left;
+plot(theta*180/pi, motor_power);
+ylabel("Power Consumption (W)");
+yyaxis right;
+plot(theta*180/pi, spring_torque, theta*180/pi, gravity_torque);
+xlabel("Elevation Angle (degrees)");
+ylabel("Spring Torque (Nm");
+legend(["Power Consumption" ,"Spring Torque", "Gravity Countertorque"]);
+title(["Spring hinge performance for \theta_0 = 270" + char(176)+ ", \tau_m_a_x = 45 in-lb"])
