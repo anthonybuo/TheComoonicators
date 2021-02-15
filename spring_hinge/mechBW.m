@@ -95,7 +95,8 @@ xlabel("Undeformed Position, degrees");
 ylabel("Torque at full deformed, in-lbs");
 zlabel("Max power consumption, watts");
 s.EdgeColor = 'none';
-figure;
+figure(1);
+cla;
 % second plot shows the bandwidth for each spring combination, a simple
 % root(K/M) for a torsional setup. A higher bandwidth is better
 % Feb 11, 2021: Actually not accurate due to preload in string, omitting
@@ -115,7 +116,8 @@ figure;
 % the "worst" case. Best to keep the subplots.
 % The more dust cover you can lift, the better.
 
-figure;
+figure(2);
+cla
 for i = 1:length(theta)
     subplot(length(theta)/4, length(theta)/4, i)
     s = surf(theta0*180/pi, T, max_dust_weight(:,:,i));
@@ -130,7 +132,8 @@ end
 % tension. Causes vibrations, potential tangling. Also shows acceleration
 % of rover body req'd to cause loss of tension. 
 
-figure;
+figure(4);
+cla;
 s = surf(theta0*180/pi, T, danger_disturbance);
 hold on
 xlabel("Undeformed Position, degrees");
@@ -145,23 +148,31 @@ legend(["Disturbance torque", "Rover Body Shock (edges)"]);
 % fifth plot shows power consumption and disturbance withstance over all
 % elevation angles for chosen spring
 
-theta0 = 270*pi/180;
+Spring_angle = 270;
+theta0 = Spring_angle*pi/180;
 K = 22.5*2*0.11298482933333./theta0;
-tension = (theta0 - theta).*K./(L/2*sin(pi/2-theta/2)); %N, min cable tension, at top, but not perpendicular to plane. No gravity torque 
+gravity_torque = -m*g*L/2*cos(theta);
+spring_torque = (theta0 - theta).*K;
+net_torque = spring_torque + gravity_torque;
+
+tension = net_torque./(L/2*sin(pi/2-theta/2)); %N, 
 motor_torque = tension*pulley_radius; % Nm, torque required to hold antenna full closed
 motor_current = motor_torque/T_max*I_max; % Amps, current required to hold antenna fully closed. Assumes that it will be proportional to ratio between required torque and stall torque at 12V. 
 motor_power = V.*(motor_current./I_max).*motor_current; % W, power draw to hold position. Same as above, voltage scales down by proportion of required current and max current.
-spring_torque = (theta0 - theta).*K;
-gravity_torque = m*g*L/2*sin(theta);
 
-figure; 
+
+
+figure(5);
+cla
 hold on
 yyaxis left;
-plot(theta*180/pi, motor_power);
+h(1) = plot(theta*180/pi, motor_power);
 ylabel("Power Consumption (W)");
+ylim([-.1 inf])
 yyaxis right;
-plot(theta*180/pi, spring_torque, theta*180/pi, gravity_torque);
+h(2) = plot(theta*180/pi, spring_torque);
+h(3) = plot(theta*180/pi, gravity_torque);
 xlabel("Elevation Angle (degrees)");
-ylabel("Spring Torque (Nm");
-legend(["Power Consumption" ,"Spring Torque", "Gravity Countertorque"]);
-title(["Spring hinge performance for \theta_0 = 270" + char(176)+ ", \tau_m_a_x = 45 in-lb"])
+ylabel("Torque (Nm)");
+legend(h, ["Power Consumption" ,"Spring Torque", "Gravity Countertorque"], 'Location', 'east');
+title(sprintf("Spring hinge performance for \theta_0 = %i" + char(176)+ ", \tau_m_a_x = %i in-lb", Spring_angle, 45))
