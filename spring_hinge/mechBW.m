@@ -175,4 +175,6 @@ h(3) = plot(theta*180/pi, gravity_torque);
 xlabel("Elevation Angle (degrees)");
 ylabel("Torque (Nm)");
 legend(h, ["Power Consumption" ,"Spring Torque", "Gravity Countertorque"], 'Location', 'east');
-title(sprintf("Spring hinge performance for \theta_0 = %i" + char(176)+ ", \tau_m_a_x = %i in-lb", Spring_angle, 45))
+title(sprintf(["Spring hinge performance for \\theta_0 = %i" + char(176)+ ", \\tau_m_a_x = %i in-lb"], Spring_angle, 45))
+
+
