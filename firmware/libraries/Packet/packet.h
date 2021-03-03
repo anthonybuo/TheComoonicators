@@ -44,5 +44,17 @@ class PacketOut {
   uint8_t stop = 0;
 };
 
+// Represents a serial packet sent from the computer to the MCU.
+class PacketIn {
+ public:
+   uint8_t command;
+   uint8_t azimuth_hi;
+   uint8_t azimuth_lo;
+   uint8_t elevation_hi;
+   uint8_t elevation_lo;
+   uint8_t speed_hi;
+   uint8_t speed_lo;
+};
+
 #endif  // _PACKET_H_
 
