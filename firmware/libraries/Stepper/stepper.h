@@ -43,6 +43,12 @@ class Stepper {
 
         // Step angle from datasheet
         const float step_angle_deg = 0.25;
+
+        // Half stepping reduces angular travel by this factor
+        const unsigned int half_step_factor = 2;
+
+        // Azimuth axis gear to ring gear conversion
+        const double speed_reduction = 1 / 6.25;
 };
 
 #endif  // _STEPPER_H_

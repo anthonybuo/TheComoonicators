@@ -16,7 +16,7 @@
 #define TIMER1_ISR_PERIOD_MS           1.0
 #define TIMER1_PRESCALER               256
 #define SYS_CLOCK_HZ                   16000000
-#define TIMER1_INTERRUPT_PERIOD_TICKS  (TIMER1_ISR_PERIOD_MS / 1000) * (SYS_CLOCK_HZ / TIMER1_PRESCALER);
+#define TIMER1_INTERRUPT_PERIOD_TICKS  (TIMER1_ISR_PERIOD_MS / 1000) * (SYS_CLOCK_HZ / TIMER1_PRESCALER)
 
 LIS3DHTR<TwoWire> LIS;
 LimitSwitch switch1, switch2;
@@ -101,6 +101,8 @@ void loop() {
   }
 
   // To computer application
+  packet_out.stepper_hi = ((int)stepper.stepper_position_deg & 0xFF00) >> 8;
+  packet_out.stepper_lo = (int)stepper.stepper_position_deg & 0x00FF;
   Serial.write(packet_out.serialize(), packet_out.packet_size);
 
   delay(250);
