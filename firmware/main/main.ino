@@ -1,6 +1,8 @@
 #include "LIS3DHTR.h"
 #include "limit_switch.h"
 #include "stepper.h"
+#include "packet.h"
+#include <Math.h>
 
 // Pinout
 #define STEPPER_LEAD_0     3U
@@ -19,6 +21,7 @@
 LIS3DHTR<TwoWire> LIS;
 LimitSwitch switch1, switch2;
 Stepper stepper(STEPPER_LEAD_0, STEPPER_LEAD_1, STEPPER_LEAD_2, STEPPER_LEAD_3);
+PacketOut packet_out;
 
 void ISR_limit_switch1(void) {
   switch1.isr();
@@ -72,10 +75,9 @@ void setup() {
 // Arduino main loop
 void loop() {
   // Sample accelerometer
-  Serial.print("accel_x: "); Serial.print(LIS.getAccelerationX());
-  Serial.print(", accel_y: "); Serial.print(LIS.getAccelerationY());
-  Serial.print(", accel_z: "); Serial.print(LIS.getAccelerationZ());
-  Serial.println("");
+  double inclination_milli_rad = atan2(LIS.getAccelerationX(), LIS.getAccelerationY()) * 1000;
+  packet_out.elevation_hi = (((int)inclination_milli_rad & 0xFF00) >> 8);
+  packet_out.elevation_lo = ((int)inclination_milli_rad & 0xFF);
 
   // Limit switch debounce if necessary
   if (switch1.debounce_active_ && millis() > switch1.reattach_interrupt_time_) {
@@ -97,6 +99,9 @@ void loop() {
     Serial.println(stepper.stepper_target_position_rot, DEC);
     stepper.stepper_direction = stepper.stepper_position_deg < (stepper.stepper_target_position_rot * 360) ? 1 : -1;
   }
+
+  // To computer application
+  Serial.write(packet_out.serialize(), packet_out.packet_size);
 
   delay(250);
 }
