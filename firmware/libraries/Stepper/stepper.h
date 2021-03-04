@@ -15,40 +15,47 @@ class Stepper {
         // Send zero current to the motor
         void idle(void);
 
+        // Current stepper direction: -1 backwards, 1 forwards
+        volatile int direction = 1;
+
+        // Set point position
+        volatile unsigned int target_position = 0;
+
+        // Getters
+        volatile unsigned int get_current_position() {
+            return current_position;
+        }
+
+        void get_current_position(uint8_t* hi, uint8_t* lo) {
+            *hi = (current_position & 0xFF00) >> 8;
+            *lo = (current_position & 0x00FF);
+        }
+
+    private:
+        // Current position
+        volatile unsigned int current_position = 0;
+
         // Control pins
         unsigned int pin1_, pin2_, pin3_, pin4_;
 
         // Half stepping lookup
-        static constexpr unsigned int NUM_STEPPER_INSTR = 8;
+        static constexpr unsigned int NUM_STEPPER_INSTR = 4;
         static constexpr unsigned int NUM_STEPPER_LEADS = 4;
         const int half_step[NUM_STEPPER_INSTR][NUM_STEPPER_LEADS] = {
-            {1, 0, 1, 0},
             {1, 0, 0, 0},
-            {1, 0, 0, 1},
             {0, 0, 0, 1},
-            {0, 1, 0, 1},
             {0, 1, 0, 0},
-            {0, 1, 1, 0},
             {0, 0, 1, 0}
         };
 
-        // Current stepper direction: -1 backwards, 1 forwards
-        volatile int stepper_direction = 1;
+        // Azimuth ROM
+        const unsigned int range_of_motion_deg = 380;
 
-        // Setpoint position in rotations
-        volatile int stepper_target_position_rot = 0;
+        // Azimuth rotation per bit of command byte
+        const double resolution_deg_per_bit = 0.04;
 
-        // Current position in degrees
-        volatile float stepper_position_deg = 0;
-
-        // Step angle from datasheet
-        const float step_angle_deg = 0.25;
-
-        // Half stepping reduces angular travel by this factor
-        const unsigned int half_step_factor = 2;
-
-        // Azimuth axis gear to ring gear conversion
-        const double speed_reduction = 1 / 6.25;
+        // Max valid target position
+        const unsigned int max_target_position = range_of_motion_deg / resolution_deg_per_bit;
 };
 
 #endif  // _STEPPER_H_

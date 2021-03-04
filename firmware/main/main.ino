@@ -13,7 +13,7 @@
 #define LIMIT_SWITCH_2_PIN 19U
 
 // Timer1 Constants
-#define TIMER1_ISR_PERIOD_MS           1.0
+#define TIMER1_ISR_PERIOD_MS           10.0
 #define TIMER1_PRESCALER               256
 #define SYS_CLOCK_HZ                   16000000
 #define TIMER1_INTERRUPT_PERIOD_TICKS  (TIMER1_ISR_PERIOD_MS / 1000) * (SYS_CLOCK_HZ / TIMER1_PRESCALER)
@@ -76,8 +76,6 @@ void setup() {
 void loop() {
   // Sample accelerometer
   double inclination_milli_rad = atan2(LIS.getAccelerationX(), LIS.getAccelerationY()) * 1000;
-  packet_out.elevation_hi = (((int)inclination_milli_rad & 0xFF00) >> 8);
-  packet_out.elevation_lo = ((int)inclination_milli_rad & 0xFF);
 
   // Limit switch debounce if necessary
   if (switch1.debounce_active_ && millis() > switch1.reattach_interrupt_time_) {
@@ -91,19 +89,20 @@ void loop() {
   if (Serial.available()) {
     unsigned char serial_data = Serial.read();
     if (serial_data == '-') {
-      stepper.stepper_target_position_rot = (Serial.read() - '0') * -1;
+      stepper.target_position = (Serial.read() - '0') * -1;
     } else {
-      stepper.stepper_target_position_rot = (serial_data - '0');
+      stepper.target_position = (serial_data);
     }
     Serial.print("New stepper command: ");
-    Serial.println(stepper.stepper_target_position_rot, DEC);
-    stepper.stepper_direction = stepper.stepper_position_deg < (stepper.stepper_target_position_rot * 360) ? 1 : -1;
+    Serial.println(stepper.target_position, DEC);
+    stepper.direction = stepper.get_current_position() < (stepper.target_position) ? 1 : -1;
   }
 
   // To computer application
-  packet_out.stepper_hi = ((int)stepper.stepper_position_deg & 0xFF00) >> 8;
-  packet_out.stepper_lo = (int)stepper.stepper_position_deg & 0x00FF;
-  Serial.write(packet_out.serialize(), packet_out.packet_size);
+  stepper.get_current_position(&packet_out.azimuth_hi, &packet_out.azimuth_lo);
+  packet_out.elevation_hi = (((int)inclination_milli_rad & 0xFF00) >> 8);
+  packet_out.elevation_lo = ((int)inclination_milli_rad & 0xFF);
+  Serial.write(packet_out.serialize(), PacketOut::PACKET_SIZE);
 
   delay(250);
 }
