@@ -18,9 +18,6 @@ class Stepper {
         // Current stepper direction: -1 backwards, 1 forwards
         volatile int direction = 1;
 
-        // Set point position
-        volatile unsigned int target_position = 0;
-
         // Getters
         volatile unsigned int get_current_position() {
             return current_position;
@@ -31,9 +28,19 @@ class Stepper {
             *lo = (current_position & 0x00FF);
         }
 
+        // Set the stepper's target position. Also updates the current
+        // direction.
+        void set_target_position(uint8_t hi, uint8_t lo) {
+            target_position = ((hi << 8) | lo);
+            direction = current_position < target_position ? 1 : -1;
+        }
+
     private:
         // Current position
         volatile unsigned int current_position = 0;
+
+        // Set point position
+        volatile unsigned int target_position = 0;
 
         // Control pins
         unsigned int pin1_, pin2_, pin3_, pin4_;

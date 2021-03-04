@@ -22,6 +22,7 @@ LIS3DHTR<TwoWire> LIS;
 LimitSwitch switch1, switch2;
 Stepper stepper(STEPPER_LEAD_0, STEPPER_LEAD_1, STEPPER_LEAD_2, STEPPER_LEAD_3);
 PacketOut packet_out;
+PacketIn packet_in;
 
 void ISR_limit_switch1(void) {
   switch1.isr();
@@ -44,6 +45,26 @@ void TIMER1_init(void) {
 
 ISR(TIMER1_COMPA_vect) {
   stepper.tick();
+}
+
+// Receive a command from the serial port
+void poll_command() {
+  while (Serial.available()) {
+    unsigned char serial_data = Serial.read();
+    static unsigned int state = 0;
+    if ((state == 0) && (serial_data == 255)) {
+      // Read the start byte (unused)
+    } else {
+      // Read the payload and stop byte
+      packet_in.read_byte(serial_data, state);
+    }
+    state++;
+    if (state == PacketIn::PACKET_SIZE) {
+      // Change antenna settings with new command
+      stepper.set_target_position(packet_in.azimuth_hi, packet_in.azimuth_lo);
+      state = 0;
+    }
+  }
 }
 
 // Arduino setup
@@ -85,18 +106,8 @@ void loop() {
     switch2.reenable_interrupt();
   }
 
-  // Get stepper command from user over serial
-  if (Serial.available()) {
-    unsigned char serial_data = Serial.read();
-    if (serial_data == '-') {
-      stepper.target_position = (Serial.read() - '0') * -1;
-    } else {
-      stepper.target_position = (serial_data);
-    }
-    Serial.print("New stepper command: ");
-    Serial.println(stepper.target_position, DEC);
-    stepper.direction = stepper.get_current_position() < (stepper.target_position) ? 1 : -1;
-  }
+  // Get command packet
+  poll_command();
 
   // To computer application
   stepper.get_current_position(&packet_out.azimuth_hi, &packet_out.azimuth_lo);
