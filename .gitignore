@@ -1,1 +1,6 @@
 *.asv
+ui/uiApp/.vs
+ui/uiApp/uiApp/*
+ui/uiApp/*.sln
+!ui/uiApp/uiApp/*.cs
+

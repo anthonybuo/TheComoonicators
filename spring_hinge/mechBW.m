@@ -1,6 +1,4 @@
-% status feb 6 1am: currently, the min and max power is off. Trying
-% different spring sizes from mcm carr, aiming roughly for ~1W power draw.
-% Trying to maximize lifting ability for other hardware, like dust cover. 
+
 
 %mechsys dynamics
 close all
@@ -15,14 +13,6 @@ theta0_in = [360, 270, 225, 180, 120] * pi/180;
 
 %find spring constant in Nm/rad for calculations
 K = T*0.11298482933333./theta0;
-
-% earthMass = m * g/9.81;
-% earthI = 1/3*earthMass*L.^2;
-% requiredI = realI - earthI;
-% requiredMass = m - earthMass;
-% inertialD = 0.025;
-% rho = 7800;
-% steelLen = 2*requiredI./(pi*(inertialD/2).^4.*rho);
 
 BW = sqrt(K./realI);
 
