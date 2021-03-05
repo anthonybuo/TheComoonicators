@@ -8,46 +8,14 @@ Set your Arduino sketchbook location to this directory. Install the following Ar
 
 Select the "no line ending" option on the Arduino serial monitor.
 
+## Testing
+
+Unfortunately, the Arduio serial monitor can't send raw bytes (as far as I know),
+so a terminal emulator like RealTerm can be used to send a byte string to the
+Arduino. Note that the terminal emulator should be disconnected from the serial
+port while uploading Arduino firmware through the Arduino IDE.
+
 ## Pinout
 
-### Arduino -> Motor Driver Board
-
-GPIO 4  -> M1A input
-
-GPIO 5  -> M1B input
-
-GPIO 6  -> M2A input
-
-GPIO 7  -> M2B input
-
-GND     -> GND
-
-
-### Motor Driver Board -> Stepper Motor
-
-M1A output -> yellow
-
-M1B output -> orange
-
-M2A output -> brown
-
-M2B output -> black
-
-VB+ output -> red
-
-VB+ output -> green
-
-
-### Power Supply -> Motor Driver Board
-
-\+ -> VB+
-
-\- -> VB-
-
-### Limit Switch -> Arduino
-
-C  -> GND
-
-NC -> GPIO 2
-
+See "Electronics Diagram.drawio" for complete pinout and serial communication format.
 
