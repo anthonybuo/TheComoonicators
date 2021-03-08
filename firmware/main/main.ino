@@ -1,6 +1,9 @@
 #include "LIS3DHTR.h"
 #include "limit_switch.h"
 #include "stepper.h"
+#include "dcmotor.h"
+#include "packet.h"
+#include <Math.h>
 
 // Pinout
 #define STEPPER_LEAD_0     3U
@@ -9,16 +12,21 @@
 #define STEPPER_LEAD_3     6U
 #define LIMIT_SWITCH_1_PIN 18U
 #define LIMIT_SWITCH_2_PIN 19U
+#define DCMOTOR_LEAD_0     7U
+#define DCMOTOR_LEAD_1     8U
 
 // Timer1 Constants
-#define TIMER1_ISR_PERIOD_MS           1.0
+#define TIMER1_ISR_PERIOD_MS           10.0
 #define TIMER1_PRESCALER               256
 #define SYS_CLOCK_HZ                   16000000
-#define TIMER1_INTERRUPT_PERIOD_TICKS  (TIMER1_ISR_PERIOD_MS / 1000) * (SYS_CLOCK_HZ / TIMER1_PRESCALER);
+#define TIMER1_INTERRUPT_PERIOD_TICKS  (TIMER1_ISR_PERIOD_MS / 1000) * (SYS_CLOCK_HZ / TIMER1_PRESCALER)
 
 LIS3DHTR<TwoWire> LIS;
 LimitSwitch switch1, switch2;
 Stepper stepper(STEPPER_LEAD_0, STEPPER_LEAD_1, STEPPER_LEAD_2, STEPPER_LEAD_3);
+DCMotor dcmotor(DCMOTOR_LEAD_0, DCMOTOR_LEAD_1);
+PacketOut packet_out;
+PacketIn packet_in;
 
 void ISR_limit_switch1(void) {
   switch1.isr();
@@ -43,6 +51,26 @@ ISR(TIMER1_COMPA_vect) {
   stepper.tick();
 }
 
+// Receive a command from the serial port
+void poll_command() {
+  while (Serial.available()) {
+    unsigned char serial_data = Serial.read();
+    static unsigned int state = 0;
+    if ((state == 0) && (serial_data == 255)) {
+      // Read the start byte (unused)
+    } else {
+      // Read the payload and stop byte
+      packet_in.read_byte(serial_data, state);
+    }
+    state++;
+    if (state == PacketIn::PACKET_SIZE) {
+      // Change antenna settings with new command
+      stepper.set_target_position(packet_in.azimuth_hi, packet_in.azimuth_lo);
+      state = 0;
+    }
+  }
+}
+
 // Arduino setup
 void setup() {
   // Accelerometer
@@ -65,6 +93,9 @@ void setup() {
   // Stepper motor
   stepper.init();
 
+  // DC motor
+  dcmotor.init();
+
   // Timer 1
   TIMER1_init();
 }
@@ -72,10 +103,7 @@ void setup() {
 // Arduino main loop
 void loop() {
   // Sample accelerometer
-  Serial.print("accel_x: "); Serial.print(LIS.getAccelerationX());
-  Serial.print(", accel_y: "); Serial.print(LIS.getAccelerationY());
-  Serial.print(", accel_z: "); Serial.print(LIS.getAccelerationZ());
-  Serial.println("");
+  double inclination_milli_rad = atan2(LIS.getAccelerationX(), LIS.getAccelerationY()) * 1000;
 
   // Limit switch debounce if necessary
   if (switch1.debounce_active_ && millis() > switch1.reattach_interrupt_time_) {
@@ -85,18 +113,14 @@ void loop() {
     switch2.reenable_interrupt();
   }
 
-  // Get stepper command from user over serial
-  if (Serial.available()) {
-    unsigned char serial_data = Serial.read();
-    if (serial_data == '-') {
-      stepper.stepper_target_position_rot = (Serial.read() - '0') * -1;
-    } else {
-      stepper.stepper_target_position_rot = (serial_data - '0');
-    }
-    Serial.print("New stepper command: ");
-    Serial.println(stepper.stepper_target_position_rot, DEC);
-    stepper.stepper_direction = stepper.stepper_position_deg < (stepper.stepper_target_position_rot * 360) ? 1 : -1;
-  }
+  // Get command packet
+  poll_command();
+
+  // To computer application
+  stepper.get_current_position(&packet_out.azimuth_hi, &packet_out.azimuth_lo);
+  packet_out.elevation_hi = (((int)inclination_milli_rad & 0xFF00) >> 8);
+  packet_out.elevation_lo = ((int)inclination_milli_rad & 0xFF);
+  Serial.write(packet_out.serialize(), PacketOut::PACKET_SIZE);
 
   delay(250);
 }

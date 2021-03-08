@@ -11,8 +11,9 @@ void Stepper::init(void) {
 void Stepper::tick(void) {
   static int i = 0;
 
-  // Quit if at setpoint
-  if (stepper_position_deg == (stepper_target_position_rot * 360)) {
+  // Quit if set point reached or invalid target
+  if ((current_position == target_position) ||
+      (target_position > max_target_position)) {
     idle();
     return;
   }
@@ -24,10 +25,10 @@ void Stepper::tick(void) {
   analogWrite(pin4_, half_step[i][3] * 255);
 
   // Update position
-  stepper_position_deg += (stepper_direction * step_angle_deg / 2);
+  current_position += direction;
 
   // Update counter
-  i += stepper_direction;
+  i += direction;
   if (i < 0) {
     i = Stepper::NUM_STEPPER_INSTR - 1;
   }
