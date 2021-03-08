@@ -1,5 +1,1 @@
 *.asv
-ui/uiApp/.vs
-ui/uiApp/uiApp/*git add
-!ui/uiApp/uiApp/*.cs
-
