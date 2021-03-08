@@ -1,6 +1,7 @@
 #include "LIS3DHTR.h"
 #include "limit_switch.h"
 #include "stepper.h"
+#include "dcmotor.h"
 #include "packet.h"
 #include <Math.h>
 
@@ -11,6 +12,8 @@
 #define STEPPER_LEAD_3     6U
 #define LIMIT_SWITCH_1_PIN 18U
 #define LIMIT_SWITCH_2_PIN 19U
+#define DCMOTOR_LEAD_0     7U
+#define DCMOTOR_LEAD_1     8U
 
 // Timer1 Constants
 #define TIMER1_ISR_PERIOD_MS           10.0
@@ -21,6 +24,7 @@
 LIS3DHTR<TwoWire> LIS;
 LimitSwitch switch1, switch2;
 Stepper stepper(STEPPER_LEAD_0, STEPPER_LEAD_1, STEPPER_LEAD_2, STEPPER_LEAD_3);
+DCMotor dcmotor(DCMOTOR_LEAD_0, DCMOTOR_LEAD_1);
 PacketOut packet_out;
 PacketIn packet_in;
 
@@ -88,6 +92,9 @@ void setup() {
 
   // Stepper motor
   stepper.init();
+
+  // DC motor
+  dcmotor.init();
 
   // Timer 1
   TIMER1_init();
