@@ -28,6 +28,9 @@ DCMotor dcmotor(DCMOTOR_LEAD_0, DCMOTOR_LEAD_1);
 PacketOut packet_out;
 PacketIn packet_in;
 
+// For testing
+bool enable_dcmotor = false;
+
 void ISR_limit_switch1(void) {
   switch1.isr();
 }
@@ -66,6 +69,8 @@ void poll_command() {
     if (state == PacketIn::PACKET_SIZE) {
       // Change antenna settings with new command
       stepper.set_target_position(packet_in.azimuth_hi, packet_in.azimuth_lo);
+      // For testing, enable dc motor if elevation_lo is non-zero
+      enable_dcmotor = (bool)packet_in.elevation_lo;
       state = 0;
     }
   }
@@ -104,6 +109,14 @@ void setup() {
 void loop() {
   // Sample accelerometer
   double inclination_milli_rad = atan2(LIS.getAccelerationX(), LIS.getAccelerationY()) * 1000;
+
+  // Test dc motor if desired
+  if (enable_dcmotor) {
+    dcmotor.set_vel(/*speed*/abs(inclination_milli_rad) / 10,
+                    /*direction*/inclination_milli_rad > 0);
+  } else {
+    dcmotor.idle();
+  }
 
   // Limit switch debounce if necessary
   if (switch1.debounce_active_ && millis() > switch1.reattach_interrupt_time_) {
