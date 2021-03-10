@@ -26,7 +26,8 @@ PacketIn packet_in;
 LIS3DHTR<TwoWire> LIS;
 LimitSwitch switch1, switch2;
 Stepper stepper(&packet_out, STEPPER_LEAD_0, STEPPER_LEAD_1, STEPPER_LEAD_2, STEPPER_LEAD_3);
-DCMotor dcmotor(&packet_out, DCMOTOR_LEAD_0, DCMOTOR_LEAD_1);
+DCMotor dcmotor(&packet_out, DCMOTOR_LEAD_0, DCMOTOR_LEAD_1,
+                /*Kp*/0.1, /*Ki*/0, /*Kd*/0, /*period*/TIMER1_ISR_PERIOD_MS/1000, /*bias*/0);
 
 // For testing
 bool enable_dcmotor = false;
@@ -76,21 +77,17 @@ ISR(TIMER2_COMPA_vect) {
 
 // Take the data read over serial and update the antenna set points
 void update_antenna_settings() {
-  bool enable_dcmotor_local = false;
-
   switch(packet_in.command) {
     case PacketIn::GOTO_AZIMUTH:
       stepper.set_target_position(packet_in.azimuth_hi, packet_in.azimuth_lo);
       break;
     case PacketIn::GOTO_ELEVATION:
       dcmotor.set_target_position(packet_in.elevation_hi, packet_in.elevation_lo);
-      enable_dcmotor_local = true;
+      enable_dcmotor = true;
       break;
     default:
       break;
   }
-
-  enable_dcmotor = enable_dcmotor_local;
 }
 
 // Receive a command from the serial port

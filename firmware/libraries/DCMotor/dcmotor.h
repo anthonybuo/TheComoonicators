@@ -6,8 +6,10 @@
 
 class DCMotor {
   public:
-      DCMotor(PacketOut* packet_out, unsigned int pin1, unsigned int pin2)
-          : packet_out_(packet_out), pin1_{pin1}, pin2_{pin2} {}
+      DCMotor(PacketOut* packet_out, unsigned int pin1, unsigned int pin2,
+              double Kp, double Ki, double Kd, double period, double bias)
+          : packet_out_(packet_out), pin1_{pin1}, pin2_{pin2}, Kp_{Kp}, Ki_{Ki},
+          Kd_{Kd}, period_{period}, bias_{bias} {}
 
       // Initialize the DC motor's control pins
       void init() {
@@ -48,11 +50,30 @@ class DCMotor {
 
       // Control command
       void tick() {
-        unsigned int speed = abs(target_pos_ - curr_pos_) / 10;
-        set_vel(speed, target_pos_ > curr_pos_);
+        // Compute error, integral, derivative terms
+        static unsigned int error_prev = 0;
+        static unsigned int integral_prev = 0;
+        double error = target_pos_ - curr_pos_;
+        double derivative = (error - error_prev) / period_;
+        double integral = integral_prev + error * period_;
+
+        // Compute control action and update previous values
+        double speed = Kp_*error + Ki_*integral + Kd_*derivative + bias_;
+        error_prev = error;
+        integral_prev = integral;
+
+        // Commit the command
+        set_vel(abs(speed), target_pos_ > curr_pos_);
       }
 
   private:
+    // PID parameters
+    double Kp_;
+    double Ki_;
+    double Kd_;
+    double bias_;
+    const double period_;
+
     // Set point
     double target_pos_;
 
