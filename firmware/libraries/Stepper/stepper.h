@@ -1,10 +1,12 @@
 #ifndef _STEPPER_H_
 #define _STEPPER_H_
 
+#include "packet.h"
+
 class Stepper {
     public:
-        Stepper(unsigned int pin1, unsigned int pin2, unsigned int pin3, unsigned int pin4)
-            : pin1_(pin1), pin2_(pin2), pin3_(pin3), pin4_(pin4) {}
+        Stepper(PacketOut* packet_out, unsigned int pin1, unsigned int pin2, unsigned int pin3, unsigned int pin4)
+            : packet_out_(packet_out), pin1_(pin1), pin2_(pin2), pin3_(pin3), pin4_(pin4) {}
 
         // Initialize the stepper's control pins
         void init(void);
@@ -44,6 +46,9 @@ class Stepper {
 
         // Control pins
         unsigned int pin1_, pin2_, pin3_, pin4_;
+
+        // Stepper sets error flags in outgoing packet
+        PacketOut* packet_out_ = nullptr;
 
         // Half stepping lookup
         static constexpr unsigned int NUM_STEPPER_INSTR = 4;

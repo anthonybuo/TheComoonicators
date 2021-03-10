@@ -11,9 +11,17 @@ void Stepper::init(void) {
 void Stepper::tick(void) {
   static int i = 0;
 
-  // Quit if set point reached or invalid target
-  if ((current_position == target_position) ||
-      (target_position > max_target_position)) {
+  // Potential set point error
+  if (target_position > max_target_position) {
+      packet_out_->set_error(PacketOut::AZIMUTH_COMMAND_OOB);
+      idle();
+      return;
+  } else {
+      packet_out_->clear_error(PacketOut::AZIMUTH_COMMAND_OOB);
+  }
+
+  // Do nothing if set point reached
+  if (current_position == target_position) {
     idle();
     return;
   }
