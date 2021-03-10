@@ -21,8 +21,8 @@ void LimitSwitch::reenable_interrupt(void) {
 }
 
 void LimitSwitch::isr(void) {
-    // debug print
-    Serial.print("limit switch isr on digital pin "); Serial.println(output_pin_);
+    stepper_->set_current_pos(stepper_pos_ticks_);
+
     detachInterrupt(digitalPinToInterrupt(output_pin_));
 
     debounce_active_ = true;

@@ -29,15 +29,18 @@ class Stepper {
             *lo = (current_position_ & 0x00FF);
         }
 
-        // Set the stepper's target position. Also updates the current
-        // direction.
+        // Set the stepper's target position
         void set_target_position(uint8_t hi, uint8_t lo) {
             target_position_ = ((hi << 8) | lo);
-            direction = current_position_ < target_position_ ? 1 : -1;
         }
         void set_target_position(uint16_t pos) {
             target_position_ = pos;
-            direction = current_position_ < target_position_ ? 1 : -1;
+        }
+
+        // Set the stepper's current position. Should only be called by the
+        // limit switches for open loop control.
+        void set_current_pos(uint16_t pos_ticks) {
+            current_position_ = pos_ticks;
         }
 
     private:

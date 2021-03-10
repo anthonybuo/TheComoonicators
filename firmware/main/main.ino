@@ -15,8 +15,10 @@
 #define DCMOTOR_LEAD_0     7U
 #define DCMOTOR_LEAD_1     8U
 
-// Misc
-#define STEPPER_HOME_POS_TICKS 0U
+// Stepper Constants
+#define STEPPER_DEG_PER_TICK   0.04
+#define STEPPER_ROM_DEG        380
+#define STEPPER_HOME_POS_TICKS (STEPPER_ROM_DEG / 2 / STEPPER_DEG_PER_TICK)
 
 // Timer1 Constants
 #define TIMER1_ISR_PERIOD_MS           10.0
@@ -27,8 +29,9 @@
 PacketOut packet_out;
 PacketIn packet_in;
 LIS3DHTR<TwoWire> LIS;
-LimitSwitch switch1, switch2;
 Stepper stepper(&packet_out, STEPPER_LEAD_0, STEPPER_LEAD_1, STEPPER_LEAD_2, STEPPER_LEAD_3);
+LimitSwitch switch1(&stepper, /*stepper_pos_ticks*/STEPPER_ROM_DEG / STEPPER_DEG_PER_TICK);
+LimitSwitch switch2(&stepper, /*stepper_pos_ticks*/0);
 DCMotor dcmotor(&packet_out, DCMOTOR_LEAD_0, DCMOTOR_LEAD_1,
                 /*Kp*/0.1, /*Ki*/0, /*Kd*/0, /*period*/TIMER1_ISR_PERIOD_MS/1000, /*bias*/0);
 
@@ -82,7 +85,9 @@ ISR(TIMER2_COMPA_vect) {
 void update_antenna_settings() {
   switch(packet_in.command) {
     case PacketIn::GOTO_POS_SPEED:
-      // TODO
+      stepper.set_target_position(packet_in.azimuth_hi, packet_in.azimuth_lo);
+      dcmotor.set_target_position(packet_in.elevation_hi, packet_in.elevation_lo);
+      enable_dcmotor = true;
       break;
     case PacketIn::GOTO_HOME:
       stepper.set_target_position(STEPPER_HOME_POS_TICKS);
