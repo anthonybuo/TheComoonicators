@@ -15,6 +15,9 @@
 #define DCMOTOR_LEAD_0     7U
 #define DCMOTOR_LEAD_1     8U
 
+// Misc
+#define STEPPER_HOME_POS_TICKS 0U
+
 // Timer1 Constants
 #define TIMER1_ISR_PERIOD_MS           10.0
 #define TIMER1_PRESCALER               256
@@ -78,6 +81,21 @@ ISR(TIMER2_COMPA_vect) {
 // Take the data read over serial and update the antenna set points
 void update_antenna_settings() {
   switch(packet_in.command) {
+    case PacketIn::GOTO_POS_SPEED:
+      // TODO
+      break;
+    case PacketIn::GOTO_HOME:
+      stepper.set_target_position(STEPPER_HOME_POS_TICKS);
+      break;
+    case PacketIn::PARK:
+      // TODO
+      break;
+    case PacketIn::UNPARK:
+      // TODO
+      break;
+    case PacketIn::MUSIC:
+      // TODO
+      break;
     case PacketIn::GOTO_AZIMUTH:
       stepper.set_target_position(packet_in.azimuth_hi, packet_in.azimuth_lo);
       break;
