@@ -101,12 +101,13 @@ void update_antenna_settings() {
     case PacketIn::MUSIC:
       // TODO
       break;
-    case PacketIn::GOTO_AZIMUTH:
-      stepper.set_target_position(packet_in.azimuth_hi, packet_in.azimuth_lo);
-      break;
     case PacketIn::GOTO_ELEVATION:
       dcmotor.set_target_position(packet_in.elevation_hi, packet_in.elevation_lo);
       enable_dcmotor = true;
+      break;
+    case PacketIn::GOTO_AZIMUTH:
+      stepper.set_speed(packet_in.speed_hi, packet_in.speed_lo);
+      stepper.set_target_position(packet_in.azimuth_hi, packet_in.azimuth_lo);
       break;
     default:
       break;

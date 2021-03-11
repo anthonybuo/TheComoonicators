@@ -28,6 +28,9 @@ class Stepper {
             *hi = (current_position_ & 0xFF00) >> 8;
             *lo = (current_position_ & 0x00FF);
         }
+        uint16_t get_target_position() {
+            return target_position_;
+        }
 
         // Set the stepper's target position
         void set_target_position(uint8_t hi, uint8_t lo) {
@@ -41,6 +44,19 @@ class Stepper {
         // limit switches for open loop control.
         void set_current_pos(uint16_t pos_ticks) {
             current_position_ = pos_ticks;
+        }
+
+        void set_speed(uint8_t hi, uint8_t lo) {
+            set_speed((hi << 8) | lo);
+        }
+
+        void set_speed(uint16_t speed_mdeg_per_s) {
+            // TODO: make stepper speed calc not ugly
+            // azimuth rotation per step: 0.04 degrees
+            // sys clk: 16MHz
+            // timer1 prescaler: 256
+            // timer1 period = OCR1A
+            OCR1A = (uint16_t)(0.04 * 16000000.0 * 1000.0 / 256.0 / speed_mdeg_per_s);
         }
 
     private:

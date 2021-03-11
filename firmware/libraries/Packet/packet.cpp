@@ -9,16 +9,16 @@ void PacketIn::read_byte(uint8_t byte, uint8_t idx) {
       command = byte;
       break;
     case 2:
-      azimuth_hi = byte;
-      break;
-    case 3:
-      azimuth_lo = byte;
-      break;
-    case 4:
       elevation_hi = byte;
       break;
-    case 5:
+    case 3:
       elevation_lo = byte;
+      break;
+    case 4:
+      azimuth_hi = byte;
+      break;
+    case 5:
+      azimuth_lo = byte;
       break;
     case 6:
       speed_hi = byte;
