@@ -22,6 +22,7 @@ void LimitSwitch::reenable_interrupt(void) {
 
 void LimitSwitch::isr(void) {
     stepper_->set_current_pos(stepper_pos_ticks_);
+    packet_out_->limit_switch_status |= (1 << id_);
 
     detachInterrupt(digitalPinToInterrupt(output_pin_));
 

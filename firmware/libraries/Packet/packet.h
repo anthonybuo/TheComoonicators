@@ -28,6 +28,11 @@ class PacketOut {
     error &= ~(1 << error_code);
   }
 
+  // Clear limit switch status
+  void clear_limit_switch() {
+    limit_switch_status = 0;
+  }
+
   // Packet contents
   const uint8_t start = 255;
   uint8_t elevation_hi = 0;
