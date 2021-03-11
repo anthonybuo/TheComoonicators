@@ -2,30 +2,43 @@
 #include "stepper.h"
 
 void Stepper::init(void) {
-    pinMode(pin1_, OUTPUT);
-    pinMode(pin2_, OUTPUT);
-    pinMode(pin3_, OUTPUT);
-    pinMode(pin4_, OUTPUT);
+  // Set all stepper leads as output
+  pinMode(pin1_, OUTPUT);
+  pinMode(pin2_, OUTPUT);
+  pinMode(pin3_, OUTPUT);
+  pinMode(pin4_, OUTPUT);
 }
 
 void Stepper::tick(void) {
+  // Stepping index
   static int i = 0;
 
-  // Quit if set point reached or invalid target
-  if ((current_position == target_position) ||
-      (target_position > max_target_position)) {
+  // Potential set point error
+  if (target_position_ > max_target_position_) {
+      packet_out_->set_error(PacketOut::AZIMUTH_COMMAND_OOB);
+      idle();
+      return;
+  } else {
+      packet_out_->clear_error(PacketOut::AZIMUTH_COMMAND_OOB);
+  }
+
+  // Do nothing if set point reached
+  if (current_position_ == target_position_) {
     idle();
     return;
   }
 
+  // Update the direction based on target position and current position
+  direction = current_position_ < target_position_ ? 1 : -1;
+
   // Stepper command
-  analogWrite(pin1_, half_step[i][0] * 255);
-  analogWrite(pin2_, half_step[i][1] * 255);
-  analogWrite(pin3_, half_step[i][2] * 255);
-  analogWrite(pin4_, half_step[i][3] * 255);
+  analogWrite(pin1_, half_step_[i][0] * duty_cycle_);
+  analogWrite(pin2_, half_step_[i][1] * duty_cycle_);
+  analogWrite(pin3_, half_step_[i][2] * duty_cycle_);
+  analogWrite(pin4_, half_step_[i][3] * duty_cycle_);
 
   // Update position
-  current_position += direction;
+  current_position_ += direction;
 
   // Update counter
   i += direction;
