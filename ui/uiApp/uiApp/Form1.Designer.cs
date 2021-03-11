@@ -56,6 +56,12 @@
             this.sendElevButton = new System.Windows.Forms.Button();
             this.sendBothButton = new System.Windows.Forms.Button();
             this.aziElevChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.connectButton = new System.Windows.Forms.Button();
+            this.errorStreamBox = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.packetStreamBox = new System.Windows.Forms.TextBox();
+            this.packetCountLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.aziElevChart)).BeginInit();
             this.SuspendLayout();
@@ -205,6 +211,7 @@
             this.sendElevButton.TabIndex = 12;
             this.sendElevButton.Text = "Send Elevation";
             this.sendElevButton.UseVisualStyleBackColor = true;
+            this.sendElevButton.Click += new System.EventHandler(this.sendElevButton_Click);
             // 
             // sendBothButton
             // 
@@ -214,9 +221,14 @@
             this.sendBothButton.TabIndex = 13;
             this.sendBothButton.Text = "Send Both";
             this.sendBothButton.UseVisualStyleBackColor = true;
+            this.sendBothButton.Click += new System.EventHandler(this.sendBothButton_Click);
             // 
             // aziElevChart
             // 
+            chartArea1.AxisY.Title = "Position (Degrees)";
+            chartArea1.AxisY2.Interval = 1D;
+            chartArea1.AxisY2.Maximum = 1D;
+            chartArea1.AxisY2.Minimum = 0D;
             chartArea1.Name = "ChartArea1";
             this.aziElevChart.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
@@ -239,12 +251,15 @@
             series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StepLine;
             series4.Legend = "Legend1";
             series4.Name = "Elevation Setpoint";
+            series5.BackImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             series5.ChartArea = "ChartArea1";
             series5.Legend = "Legend1";
             series5.Name = "CW Limit Switch";
+            series5.YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
             series6.ChartArea = "ChartArea1";
             series6.Legend = "Legend1";
             series6.Name = "CCW Limit Switch";
+            series6.YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
             this.aziElevChart.Series.Add(series1);
             this.aziElevChart.Series.Add(series2);
             this.aziElevChart.Series.Add(series3);
@@ -252,8 +267,63 @@
             this.aziElevChart.Series.Add(series5);
             this.aziElevChart.Series.Add(series6);
             this.aziElevChart.Size = new System.Drawing.Size(776, 238);
+            this.aziElevChart.SuppressExceptions = true;
             this.aziElevChart.TabIndex = 14;
             this.aziElevChart.Text = "Chart1";
+            // 
+            // connectButton
+            // 
+            this.connectButton.Location = new System.Drawing.Point(176, 26);
+            this.connectButton.Name = "connectButton";
+            this.connectButton.Size = new System.Drawing.Size(75, 23);
+            this.connectButton.TabIndex = 15;
+            this.connectButton.Text = "Connect";
+            this.connectButton.UseVisualStyleBackColor = true;
+            this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
+            // 
+            // errorStreamBox
+            // 
+            this.errorStreamBox.Location = new System.Drawing.Point(210, 77);
+            this.errorStreamBox.Multiline = true;
+            this.errorStreamBox.Name = "errorStreamBox";
+            this.errorStreamBox.Size = new System.Drawing.Size(190, 117);
+            this.errorStreamBox.TabIndex = 16;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(207, 61);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(65, 13);
+            this.label6.TabIndex = 17;
+            this.label6.Text = "Error Stream";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(403, 61);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(111, 13);
+            this.label7.TabIndex = 19;
+            this.label7.Text = "Packet Stream Count:";
+            // 
+            // packetStreamBox
+            // 
+            this.packetStreamBox.Location = new System.Drawing.Point(406, 77);
+            this.packetStreamBox.Multiline = true;
+            this.packetStreamBox.Name = "packetStreamBox";
+            this.packetStreamBox.Size = new System.Drawing.Size(190, 117);
+            this.packetStreamBox.TabIndex = 18;
+            this.packetStreamBox.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            // 
+            // packetCountLabel
+            // 
+            this.packetCountLabel.AutoSize = true;
+            this.packetCountLabel.Location = new System.Drawing.Point(510, 61);
+            this.packetCountLabel.Name = "packetCountLabel";
+            this.packetCountLabel.Size = new System.Drawing.Size(13, 13);
+            this.packetCountLabel.TabIndex = 20;
+            this.packetCountLabel.Text = "0";
             // 
             // Form1
             // 
@@ -261,6 +331,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.packetCountLabel);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.packetStreamBox);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.errorStreamBox);
+            this.Controls.Add(this.connectButton);
             this.Controls.Add(this.aziElevChart);
             this.Controls.Add(this.sendBothButton);
             this.Controls.Add(this.sendElevButton);
@@ -309,6 +385,12 @@
         private System.Windows.Forms.Button sendElevButton;
         private System.Windows.Forms.Button sendBothButton;
         private System.Windows.Forms.DataVisualization.Charting.Chart aziElevChart;
+        private System.Windows.Forms.Button connectButton;
+        private System.Windows.Forms.TextBox errorStreamBox;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox packetStreamBox;
+        private System.Windows.Forms.Label packetCountLabel;
     }
 }
 
