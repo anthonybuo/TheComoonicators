@@ -110,7 +110,11 @@ namespace uiApp
                 aziElevChart.Series[3].Points.AddXY(chartTime, double.Parse(aziSetpointBox.Text));
             }
 
+            if (pkt.switches.cwAzi)
+                aziElevChart.Series[4].Points.AddXY(chartTime, 0.25);
 
+            if (pkt.switches.ccwAzi)
+                aziElevChart.Series[5].Points.AddXY(chartTime, 0.25);
         }
 
         private void updatePacketStream(InPacket pkt)
@@ -205,6 +209,37 @@ namespace uiApp
         {
 
         }
+
+        private void aziSetpointBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void aziSetpointBox_Leave(object sender, EventArgs e)
+        {
+            try
+            {
+                double.Parse(aziSetpointBox.Text);
+            }
+            catch (System.FormatException)
+            {
+                aziSetpointBox.Text = "0";
+                MessageBox.Show("Input must be numerical");
+            }
+        }
+
+        private void elevSetpointBox_Leave(object sender, EventArgs e)
+        {
+            try
+            {
+                double.Parse(aziSetpointBox.Text);
+            }
+            catch (System.FormatException)
+            {
+                aziSetpointBox.Text = "0";
+                MessageBox.Show("Input must be numerical");
+            }
+        }
     }
 
     class Packet
@@ -251,17 +286,17 @@ namespace uiApp
 
     class InPacket : Packet
     { 
-        private struct errorStruct
+        public struct errorStruct
         {
             public bool elevOutOfBounds, aziOutOfBounds, speedOutOfBounds, accelerometerReadingUnrealistic, accelerometerNotCommunicating;
         }
-        private struct limitSwitchStruct
+        public struct limitSwitchStruct
         {
             public bool cwAzi, ccwAzi, vertElev, horiElev;
         }
 
-        limitSwitchStruct switches;
-        errorStruct errors;
+        public limitSwitchStruct switches;
+        public errorStruct errors;
         
         public InPacket(int packLen) : base(packLen)
         {

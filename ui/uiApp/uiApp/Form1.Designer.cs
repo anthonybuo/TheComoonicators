@@ -153,6 +153,7 @@
             this.elevBox.Name = "elevBox";
             this.elevBox.Size = new System.Drawing.Size(62, 20);
             this.elevBox.TabIndex = 7;
+            this.elevBox.Text = "0";
             // 
             // aziBox
             // 
@@ -160,6 +161,7 @@
             this.aziBox.Name = "aziBox";
             this.aziBox.Size = new System.Drawing.Size(64, 20);
             this.aziBox.TabIndex = 9;
+            this.aziBox.Text = "0";
             // 
             // aziSetpointBox
             // 
@@ -167,6 +169,8 @@
             this.aziSetpointBox.Name = "aziSetpointBox";
             this.aziSetpointBox.Size = new System.Drawing.Size(64, 20);
             this.aziSetpointBox.TabIndex = 10;
+            this.aziSetpointBox.Text = "0";
+            this.aziSetpointBox.Leave += new System.EventHandler(this.aziSetpointBox_Leave);
             // 
             // elevSetpointBox
             // 
@@ -174,6 +178,8 @@
             this.elevSetpointBox.Name = "elevSetpointBox";
             this.elevSetpointBox.Size = new System.Drawing.Size(62, 20);
             this.elevSetpointBox.TabIndex = 10;
+            this.elevSetpointBox.Text = "0";
+            this.elevSetpointBox.Leave += new System.EventHandler(this.elevSetpointBox_Leave);
             // 
             // label4
             // 
