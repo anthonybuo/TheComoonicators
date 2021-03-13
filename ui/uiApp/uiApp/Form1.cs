@@ -256,13 +256,13 @@ namespace uiApp
         }
         internal double elevB2D(byte[] elevByte)
         {
-            double elevDouble = (double)(((int)elevByte[0] << 8) + elevByte[1]) * Form1.ELEV_DEG_PER_BIT;
+            double elevDouble = (double)((short)((short)elevByte[0] << 8) + elevByte[1]) * Form1.ELEV_DEG_PER_BIT;
             return elevDouble;
         }
 
         internal double aziB2D(byte[] aziByte)
         {
-            double aziDouble = (double)((int)aziByte[0] << 8 + aziByte[1]) * Form1.AZI_DEG_PER_BIT;
+            double aziDouble = (double)((short)((short)aziByte[0] << 8) + aziByte[1]) * Form1.AZI_DEG_PER_BIT;
             return aziDouble;
         }
 
@@ -325,7 +325,7 @@ namespace uiApp
                         index = 0;
                         elev = base.elevB2D(temp2);
                         temp2[0] = data[3];
-                        temp2[0] = data[4];
+                        temp2[1] = data[4];
                         azi = base.aziB2D(temp2);
 
                         switches.cwAzi = (data[6] & 0b1) != 0;
