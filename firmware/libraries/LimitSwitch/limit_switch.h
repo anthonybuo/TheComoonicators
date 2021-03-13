@@ -3,11 +3,12 @@
 
 #include <Arduino.h>
 #include "stepper.h"
+#include "packet.h"
 
 class LimitSwitch {
   public:
-    LimitSwitch(Stepper* stepper, uint16_t stepper_pos_ticks)
-        : stepper_{stepper}, stepper_pos_ticks_{stepper_pos_ticks} {}
+    LimitSwitch(uint8_t id, PacketOut* packet_out, Stepper* stepper, uint16_t stepper_pos_ticks)
+        : id_{id}, packet_out_{packet_out}, stepper_{stepper}, stepper_pos_ticks_{stepper_pos_ticks} {}
 
     // Associate a limit switch with an interrupt pin and enable its ISR
     void init(unsigned int output_pin, void (*isr)(void));
@@ -32,11 +33,17 @@ class LimitSwitch {
     unsigned int reattach_interrupt_time_;
 
   private:
+    // Identifier
+    uint8_t id_;
+
     // The stepper position in ticks that will be set in the isr
     uint16_t stepper_pos_ticks_;
 
     // Handle to stepper for updating its position
     volatile Stepper* stepper_ = nullptr;
+
+    // For outgoing data
+    volatile PacketOut* packet_out_ = nullptr;
 
     // Debounce duration
     const unsigned int debounce_duration_ms_ = 1000;

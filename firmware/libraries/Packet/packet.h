@@ -28,6 +28,11 @@ class PacketOut {
     error &= ~(1 << error_code);
   }
 
+  // Clear limit switch status
+  void clear_limit_switch() {
+    limit_switch_status = 0;
+  }
+
   // Packet contents
   const uint8_t start = 255;
   uint8_t elevation_hi = 0;
@@ -62,10 +67,10 @@ class PacketIn {
    void read_byte(uint8_t byte, uint8_t idx);
 
    uint8_t command = 0;
-   uint8_t azimuth_hi = 0;
-   uint8_t azimuth_lo = 0;
    uint8_t elevation_hi = 0;
    uint8_t elevation_lo = 0;
+   uint8_t azimuth_hi = 0;
+   uint8_t azimuth_lo = 0;
    uint8_t speed_hi = 0;
    uint8_t speed_lo = 0;
    uint8_t stop = 0;

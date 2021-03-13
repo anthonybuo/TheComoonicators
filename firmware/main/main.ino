@@ -5,6 +5,9 @@
 #include "packet.h"
 #include <Math.h>
 
+// System Constants
+#define SYS_CLOCK_HZ 16000000
+
 // Pinout
 #define STEPPER_LEAD_0     3U
 #define STEPPER_LEAD_1     2U
@@ -21,22 +24,33 @@
 #define STEPPER_HOME_POS_TICKS (STEPPER_ROM_DEG / 2 / STEPPER_DEG_PER_TICK)
 
 // Timer1 Constants
-#define TIMER1_ISR_PERIOD_MS           10.0
-#define TIMER1_PRESCALER               256
-#define SYS_CLOCK_HZ                   16000000
-#define TIMER1_INTERRUPT_PERIOD_TICKS  (TIMER1_ISR_PERIOD_MS / 1000) * (SYS_CLOCK_HZ / TIMER1_PRESCALER)
+#define TIMER1_ISR_PERIOD_MS          10.0
+#define TIMER1_PRESCALER              256
+#define TIMER1_INTERRUPT_PERIOD_TICKS (TIMER1_ISR_PERIOD_MS / 1000) * (SYS_CLOCK_HZ / TIMER1_PRESCALER)
 
+// Timer2 Constants
+#define TIMER2_ISR_PERIOD_MS          10.0
+#define TIMER2_PRESCALER              256
+#define TIMER2_INTERRUPT_PERIOD_TICKS (TIMER2_ISR_PERIOD_MS / 1000) * (SYS_CLOCK_HZ / TIMER2_PRESCALER)
+
+// Timer5 Constants
+#define TIMER5_ISR_PERIOD_MS          20.0
+#define TIMER5_PRESCALER              256
+#define TIMER5_INTERRUPT_PERIOD_TICKS (TIMER5_ISR_PERIOD_MS / 1000) * (SYS_CLOCK_HZ / TIMER5_PRESCALER)
+
+double inclination_milli_rad;
 PacketOut packet_out;
 PacketIn packet_in;
 LIS3DHTR<TwoWire> LIS;
 Stepper stepper(&packet_out, STEPPER_LEAD_0, STEPPER_LEAD_1, STEPPER_LEAD_2, STEPPER_LEAD_3);
-LimitSwitch switch1(&stepper, /*stepper_pos_ticks*/STEPPER_ROM_DEG / STEPPER_DEG_PER_TICK);
-LimitSwitch switch2(&stepper, /*stepper_pos_ticks*/0);
+LimitSwitch switch1(/*id*/0, &packet_out, &stepper, /*stepper_pos_ticks*/STEPPER_ROM_DEG / STEPPER_DEG_PER_TICK);
+LimitSwitch switch2(/*id*/1, &packet_out, &stepper, /*stepper_pos_ticks*/0);
 DCMotor dcmotor(&packet_out, DCMOTOR_LEAD_0, DCMOTOR_LEAD_1,
                 /*Kp*/0.1, /*Ki*/0, /*Kd*/0, /*period*/TIMER1_ISR_PERIOD_MS/1000, /*bias*/0);
 
 // For testing
 bool enable_dcmotor = false;
+bool enable_stepper = false;
 
 void ISR_limit_switch1(void) {
   switch1.isr();
@@ -62,23 +76,50 @@ void TIMER2_init(void) {
   TCCR2A = 0;
   TCCR2B = 0;
   TCNT2  = 0;
-  OCR2A = TIMER1_INTERRUPT_PERIOD_TICKS; // compare match register
+  OCR2A = TIMER2_INTERRUPT_PERIOD_TICKS; // compare match register
   TCCR2B |= (1 << WGM12);                // CTC mode (compare then clear)
   TCCR2B |= (1 << CS12);                 // 256 prescaler
   TIMSK2 |= (1 << OCIE1A);               // enable timer compare interrupt
 }
 
-ISR(TIMER1_COMPA_vect) {
-  stepper.tick();
+// Initializes timer5 interrupt period
+void TIMER5_init(void) {
+  TCCR5A = 0;
+  TCCR5B = 0;
+  TCNT5  = 0;
+  OCR5A = TIMER5_INTERRUPT_PERIOD_TICKS; // compare match register
+  TCCR5B |= (1 << WGM12);                // CTC mode (compare then clear)
+  TCCR5B |= (1 << CS12);                 // 256 prescaler
+  TIMSK5 |= (1 << OCIE1A);               // enable timer compare interrupt
 }
 
+// Timer1 interrupt service routine
+ISR(TIMER1_COMPA_vect) {
+  if (enable_stepper) {
+    stepper.tick();
+  } else {
+    stepper.idle();
+  }
+}
+
+// Timer2 interrupt service routine
 ISR(TIMER2_COMPA_vect) {
-  // For testing allow dc motor to be turned off
   if (enable_dcmotor) {
     dcmotor.tick();
   } else {
     dcmotor.idle();
   }
+}
+
+// Timer5 interrupt service routine
+ISR(TIMER5_COMPA_vect) {
+  // Gather vitals to send
+  stepper.get_current_position(&packet_out.azimuth_hi, &packet_out.azimuth_lo);
+  packet_out.elevation_hi = (((int)inclination_milli_rad & 0xFF00) >> 8);
+  packet_out.elevation_lo = ((int)inclination_milli_rad & 0xFF);
+  packet_out.sample_rate = 1000 / TIMER5_ISR_PERIOD_MS;
+  Serial.write(packet_out.serialize(), PacketOut::PACKET_SIZE);
+  packet_out.clear_limit_switch();
 }
 
 // Take the data read over serial and update the antenna set points
@@ -88,9 +129,11 @@ void update_antenna_settings() {
       stepper.set_target_position(packet_in.azimuth_hi, packet_in.azimuth_lo);
       dcmotor.set_target_position(packet_in.elevation_hi, packet_in.elevation_lo);
       enable_dcmotor = true;
+      enable_stepper = true;
       break;
     case PacketIn::GOTO_HOME:
       stepper.set_target_position(STEPPER_HOME_POS_TICKS);
+      enable_stepper = true;
       break;
     case PacketIn::PARK:
       // TODO
@@ -101,12 +144,14 @@ void update_antenna_settings() {
     case PacketIn::MUSIC:
       // TODO
       break;
-    case PacketIn::GOTO_AZIMUTH:
-      stepper.set_target_position(packet_in.azimuth_hi, packet_in.azimuth_lo);
-      break;
     case PacketIn::GOTO_ELEVATION:
       dcmotor.set_target_position(packet_in.elevation_hi, packet_in.elevation_lo);
       enable_dcmotor = true;
+      break;
+    case PacketIn::GOTO_AZIMUTH:
+      stepper.set_speed(packet_in.speed_hi, packet_in.speed_lo);
+      stepper.set_target_position(packet_in.azimuth_hi, packet_in.azimuth_lo);
+      enable_stepper = true;
       break;
     default:
       break;
@@ -156,12 +201,13 @@ void setup() {
   dcmotor.init();
   TIMER1_init();
   TIMER2_init();
+  TIMER5_init();
 }
 
 // Arduino main loop
 void loop() {
   // Sample accelerometer
-  double inclination_milli_rad = atan2(LIS.getAccelerationX(), LIS.getAccelerationY()) * 1000;
+  inclination_milli_rad = atan2(LIS.getAccelerationX(), LIS.getAccelerationY()) * 1000;
   dcmotor.update_current_position(inclination_milli_rad);
 
   // Limit switch debounce if necessary
@@ -174,12 +220,6 @@ void loop() {
 
   // Get command packet
   poll_command();
-
-  // To computer application
-  stepper.get_current_position(&packet_out.azimuth_hi, &packet_out.azimuth_lo);
-  packet_out.elevation_hi = (((int)inclination_milli_rad & 0xFF00) >> 8);
-  packet_out.elevation_lo = ((int)inclination_milli_rad & 0xFF);
-  Serial.write(packet_out.serialize(), PacketOut::PACKET_SIZE);
 
   delay(250);
 }
