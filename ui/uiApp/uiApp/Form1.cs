@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.IO.Ports;
-using System.Threading;
-using System.Net;
-using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO.Ports;
+using System.Windows.Forms;
 
 namespace uiApp
 {
@@ -93,21 +85,10 @@ namespace uiApp
             //TODO change this back to frequency calc once implemented
             aziElevChart.Series[0].Points.AddXY(chartTime, pkt.elev);
             aziElevChart.Series[1].Points.AddXY(chartTime, pkt.azi);
-            if(elevSetpointBox.Text == "")
-            {
-                aziElevChart.Series[2].Points.AddXY(chartTime, -1);
-            }
-            else
-            {
-                aziElevChart.Series[2].Points.AddXY(chartTime, double.Parse(elevSetpointBox.Text));
-            }
-            if (elevSetpointBox.Text == "")
-            {
-                aziElevChart.Series[3].Points.AddXY(chartTime, -1);
-            }
-            else
-            {
-                aziElevChart.Series[3].Points.AddXY(chartTime, double.Parse(aziSetpointBox.Text));
+            if(outPackets.Count > 0)
+            { 
+                aziElevChart.Series[2].Points.AddXY(chartTime, outPackets[outPackets.Count-1].elev);
+                aziElevChart.Series[3].Points.AddXY(chartTime, outPackets[outPackets.Count - 1].azi);
             }
 
             if (pkt.switches.cwAzi)
@@ -143,24 +124,14 @@ namespace uiApp
 
         private void dataRecieved(object sender, SerialDataReceivedEventArgs e)
         {
+            if(!port.IsOpen)
+            {
+                return;
+            }
             while (port.BytesToRead != 0)
             {
                 dataReceived.Enqueue((byte)port.ReadByte());
             }
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void portList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void sendAziButton_Click(object sender, EventArgs e)
@@ -241,7 +212,7 @@ namespace uiApp
         {
             try
             {
-                double.Parse(aziSetpointBox.Text);
+                double.Parse(elevSetpointBox.Text);
             }
             catch (System.FormatException)
             {
@@ -271,6 +242,61 @@ namespace uiApp
             {
                 aziElevChart.Series[i].Points.Clear();
             }
+        }
+
+        public static byte[] StringToByteArrayFastest(string hex)
+        // from https://stackoverflow.com/questions/321370/how-can-i-convert-a-hex-string-to-a-byte-array
+        {
+            if (hex.Length % 2 == 1)
+                throw new Exception("The binary key cannot have an odd number of digits");
+
+            byte[] arr = new byte[hex.Length >> 1];
+
+            for (int i = 0; i < hex.Length >> 1; ++i)
+            {
+                arr[i] = (byte)((GetHexVal(hex[i << 1]) << 4) + (GetHexVal(hex[(i << 1) + 1])));
+            }
+
+            return arr;
+        }
+
+        public static int GetHexVal(char hex)
+        // from https://stackoverflow.com/questions/321370/how-can-i-convert-a-hex-string-to-a-byte-array
+        {
+            int val = (int)hex;
+            //For uppercase A-F letters:
+            //return val - (val < 58 ? 48 : 55);
+            //For lowercase a-f letters:
+            //return val - (val < 58 ? 48 : 87);
+            //Or the two combined, but a bit slower:
+            return val - (val < 58 ? 48 : (val < 97 ? 55 : 87));
+        }
+
+        private void rawPacketButton_Click(object sender, EventArgs e)
+        {
+            if(!port.IsOpen)
+            {
+                MessageBox.Show("Port is closed");
+                return;
+            }
+            string txt = rawPacketBox.Text;
+            // FF-CC-EH-EL-AH-AL-SH-SL-SP
+            if (txt.Length != 26)
+            {
+                MessageBox.Show("Incorrect packet format");
+                return;
+            }
+            txt = txt.Replace("-", "");
+            txt = txt.ToLower();
+
+            byte[] data = StringToByteArrayFastest(txt);
+
+            outPackets.Add(new OutPacket(OUT_PACKET_LEN));
+            outPackets[outPacketCount].data = data;
+
+            port.Write(data, 0, outPackets[outPacketCount].PACKET_LENGTH);
+            updateOutPacketStream(outPackets[outPacketCount]);
+            outPacketCount++;
         }
     }
 

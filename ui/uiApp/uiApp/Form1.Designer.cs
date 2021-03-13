@@ -28,14 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series11 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series12 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,6 +69,9 @@
             this.outpacketCountLabel = new System.Windows.Forms.Label();
             this.speedTextBox = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
+            this.rawPacketBox = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.rawPacketButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.aziElevChart)).BeginInit();
             this.SuspendLayout();
@@ -152,7 +155,6 @@
             this.portList.Name = "portList";
             this.portList.Size = new System.Drawing.Size(121, 21);
             this.portList.TabIndex = 2;
-            this.portList.SelectedIndexChanged += new System.EventHandler(this.portList_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -256,47 +258,47 @@
             // 
             // aziElevChart
             // 
-            chartArea2.AxisY.Title = "Position (Degrees)";
-            chartArea2.AxisY2.Interval = 1D;
-            chartArea2.AxisY2.Maximum = 1D;
-            chartArea2.AxisY2.Minimum = 0D;
-            chartArea2.Name = "ChartArea1";
-            this.aziElevChart.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.aziElevChart.Legends.Add(legend2);
+            chartArea1.AxisY.Title = "Position (Degrees)";
+            chartArea1.AxisY2.Interval = 1D;
+            chartArea1.AxisY2.Maximum = 1D;
+            chartArea1.AxisY2.Minimum = 0D;
+            chartArea1.Name = "ChartArea1";
+            this.aziElevChart.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.aziElevChart.Legends.Add(legend1);
             this.aziElevChart.Location = new System.Drawing.Point(12, 200);
             this.aziElevChart.Name = "aziElevChart";
-            series7.ChartArea = "ChartArea1";
-            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series7.Legend = "Legend1";
-            series7.Name = "Azimuth";
-            series8.ChartArea = "ChartArea1";
-            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series8.Legend = "Legend1";
-            series8.Name = "Elevation";
-            series9.ChartArea = "ChartArea1";
-            series9.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StepLine;
-            series9.Legend = "Legend1";
-            series9.Name = "Azimuth Setpoint";
-            series10.ChartArea = "ChartArea1";
-            series10.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StepLine;
-            series10.Legend = "Legend1";
-            series10.Name = "Elevation Setpoint";
-            series11.BackImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            series11.ChartArea = "ChartArea1";
-            series11.Legend = "Legend1";
-            series11.Name = "CW Limit Switch";
-            series11.YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
-            series12.ChartArea = "ChartArea1";
-            series12.Legend = "Legend1";
-            series12.Name = "CCW Limit Switch";
-            series12.YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
-            this.aziElevChart.Series.Add(series7);
-            this.aziElevChart.Series.Add(series8);
-            this.aziElevChart.Series.Add(series9);
-            this.aziElevChart.Series.Add(series10);
-            this.aziElevChart.Series.Add(series11);
-            this.aziElevChart.Series.Add(series12);
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Legend = "Legend1";
+            series1.Name = "Elevation";
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Legend = "Legend1";
+            series2.Name = "Azimuth";
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StepLine;
+            series3.Legend = "Legend1";
+            series3.Name = "Elevation Setpoint";
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StepLine;
+            series4.Legend = "Legend1";
+            series4.Name = "Azimuth Setpoint";
+            series5.BackImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            series5.ChartArea = "ChartArea1";
+            series5.Legend = "Legend1";
+            series5.Name = "CW Limit Switch";
+            series5.YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
+            series6.ChartArea = "ChartArea1";
+            series6.Legend = "Legend1";
+            series6.Name = "CCW Limit Switch";
+            series6.YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
+            this.aziElevChart.Series.Add(series1);
+            this.aziElevChart.Series.Add(series2);
+            this.aziElevChart.Series.Add(series3);
+            this.aziElevChart.Series.Add(series4);
+            this.aziElevChart.Series.Add(series5);
+            this.aziElevChart.Series.Add(series6);
             this.aziElevChart.Size = new System.Drawing.Size(776, 238);
             this.aziElevChart.SuppressExceptions = true;
             this.aziElevChart.TabIndex = 14;
@@ -332,7 +334,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(403, 61);
+            this.label7.Location = new System.Drawing.Point(403, 95);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(118, 13);
             this.label7.TabIndex = 19;
@@ -340,17 +342,17 @@
             // 
             // packetStreamBox
             // 
-            this.packetStreamBox.Location = new System.Drawing.Point(404, 77);
+            this.packetStreamBox.Location = new System.Drawing.Point(404, 111);
             this.packetStreamBox.Multiline = true;
             this.packetStreamBox.Name = "packetStreamBox";
-            this.packetStreamBox.Size = new System.Drawing.Size(190, 117);
+            this.packetStreamBox.Size = new System.Drawing.Size(190, 83);
             this.packetStreamBox.TabIndex = 18;
             this.packetStreamBox.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // packetCountLabel
             // 
             this.packetCountLabel.AutoSize = true;
-            this.packetCountLabel.Location = new System.Drawing.Point(527, 61);
+            this.packetCountLabel.Location = new System.Drawing.Point(527, 95);
             this.packetCountLabel.Name = "packetCountLabel";
             this.packetCountLabel.Size = new System.Drawing.Size(13, 13);
             this.packetCountLabel.TabIndex = 20;
@@ -359,7 +361,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(595, 61);
+            this.label8.Location = new System.Drawing.Point(595, 95);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(126, 13);
             this.label8.TabIndex = 22;
@@ -367,16 +369,16 @@
             // 
             // outpacketStreamBox
             // 
-            this.outpacketStreamBox.Location = new System.Drawing.Point(598, 77);
+            this.outpacketStreamBox.Location = new System.Drawing.Point(598, 111);
             this.outpacketStreamBox.Multiline = true;
             this.outpacketStreamBox.Name = "outpacketStreamBox";
-            this.outpacketStreamBox.Size = new System.Drawing.Size(190, 117);
+            this.outpacketStreamBox.Size = new System.Drawing.Size(190, 83);
             this.outpacketStreamBox.TabIndex = 21;
             // 
             // outpacketCountLabel
             // 
             this.outpacketCountLabel.AutoSize = true;
-            this.outpacketCountLabel.Location = new System.Drawing.Point(727, 61);
+            this.outpacketCountLabel.Location = new System.Drawing.Point(727, 95);
             this.outpacketCountLabel.Name = "outpacketCountLabel";
             this.outpacketCountLabel.Size = new System.Drawing.Size(13, 13);
             this.outpacketCountLabel.TabIndex = 23;
@@ -399,12 +401,41 @@
             this.label9.TabIndex = 25;
             this.label9.Text = "Speed (mdeg/s)";
             // 
+            // rawPacketBox
+            // 
+            this.rawPacketBox.Location = new System.Drawing.Point(300, 68);
+            this.rawPacketBox.Name = "rawPacketBox";
+            this.rawPacketBox.Size = new System.Drawing.Size(170, 20);
+            this.rawPacketBox.TabIndex = 26;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(297, 52);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(128, 13);
+            this.label10.TabIndex = 27;
+            this.label10.Text = "Raw Packet (FF-01-EE...)";
+            // 
+            // rawPacketButton
+            // 
+            this.rawPacketButton.Location = new System.Drawing.Point(476, 66);
+            this.rawPacketButton.Name = "rawPacketButton";
+            this.rawPacketButton.Size = new System.Drawing.Size(90, 23);
+            this.rawPacketButton.TabIndex = 28;
+            this.rawPacketButton.Text = "Send Packet";
+            this.rawPacketButton.UseVisualStyleBackColor = true;
+            this.rawPacketButton.Click += new System.EventHandler(this.rawPacketButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.rawPacketButton);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.rawPacketBox);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.speedTextBox);
             this.Controls.Add(this.outpacketCountLabel);
@@ -477,6 +508,9 @@
         private System.Windows.Forms.Label outpacketCountLabel;
         private System.Windows.Forms.TextBox speedTextBox;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox rawPacketBox;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button rawPacketButton;
     }
 }
 
