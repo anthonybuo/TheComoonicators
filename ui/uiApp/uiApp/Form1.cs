@@ -122,6 +122,11 @@ namespace uiApp
             packetStreamBox.AppendText(BitConverter.ToString(pkt.data) + Environment.NewLine);
         }
 
+        private void updateOutPacketStream(OutPacket pkt)
+        {
+            outpacketStreamBox.AppendText(BitConverter.ToString(pkt.data) + Environment.NewLine);
+        }
+
         private void chart1_Click(object sender, EventArgs e)
         {
 
@@ -184,9 +189,13 @@ namespace uiApp
             double azi, elev;
             azi = double.Parse(aziSetpointBox.Text);
             elev = double.Parse(elevSetpointBox.Text);
-            outPackets[outPacketCount].pack(cmd, elev, azi, OutPacket.DEFAULT_SPEED);
+            short speed = short.Parse(speedTextBox.Text);
+            outPackets[outPacketCount].pack(cmd, elev, azi, speed);
 
             port.Write(outPackets[outPacketCount].data, 0, outPackets[outPacketCount].PACKET_LENGTH);
+
+            updateOutPacketStream(outPackets[outPacketCount]);
+
             outPacketCount++;
         }
 
@@ -238,6 +247,29 @@ namespace uiApp
             {
                 aziSetpointBox.Text = "0";
                 MessageBox.Show("Input must be numerical");
+            }
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            //saveFileDialog1.Title = "Save data to file";
+            //saveFileDialog1.ShowDialog();
+
+            //// If the file name is not an empty string open it for saving.
+            //if (saveFileDialog1.FileName = "")
+            //{
+            //    return;
+            //}
+
+            //System.IO.StreamWriter file = new System.IO.StreamWriter(saveFileDialog1.FileName);
+        }
+
+        private void clearGraphToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            for(int i = 0; i < aziElevChart.Series.Count; i++)
+            {
+                aziElevChart.Series[i].Points.Clear();
             }
         }
     }
@@ -358,7 +390,7 @@ namespace uiApp
         public static int GOTO_CMD = 0x1;
         public static int GOTO_AZI_CMD = 0x07;
         public static int GOTO_ELEV_CMD = 0x06;
-        public static int DEFAULT_SPEED = 0x1;
+        public static int DEFAULT_SPEED = 1000;
         public OutPacket(int packLen) : base(packLen)
         {
 
