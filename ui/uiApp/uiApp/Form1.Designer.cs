@@ -62,6 +62,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.packetStreamBox = new System.Windows.Forms.TextBox();
             this.packetCountLabel = new System.Windows.Forms.Label();
+            this.chartOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.aziElevChart)).BeginInit();
             this.SuspendLayout();
@@ -90,23 +91,25 @@
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveAsToolStripMenuItem.Text = "Save As";
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // optionsToolStripMenuItem
             // 
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.chartOptionsToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -153,6 +156,7 @@
             this.elevBox.Name = "elevBox";
             this.elevBox.Size = new System.Drawing.Size(62, 20);
             this.elevBox.TabIndex = 7;
+            this.elevBox.Text = "0";
             // 
             // aziBox
             // 
@@ -160,6 +164,7 @@
             this.aziBox.Name = "aziBox";
             this.aziBox.Size = new System.Drawing.Size(64, 20);
             this.aziBox.TabIndex = 9;
+            this.aziBox.Text = "0";
             // 
             // aziSetpointBox
             // 
@@ -167,6 +172,8 @@
             this.aziSetpointBox.Name = "aziSetpointBox";
             this.aziSetpointBox.Size = new System.Drawing.Size(64, 20);
             this.aziSetpointBox.TabIndex = 10;
+            this.aziSetpointBox.Text = "0";
+            this.aziSetpointBox.Leave += new System.EventHandler(this.aziSetpointBox_Leave);
             // 
             // elevSetpointBox
             // 
@@ -174,6 +181,8 @@
             this.elevSetpointBox.Name = "elevSetpointBox";
             this.elevSetpointBox.Size = new System.Drawing.Size(62, 20);
             this.elevSetpointBox.TabIndex = 10;
+            this.elevSetpointBox.Text = "0";
+            this.elevSetpointBox.Leave += new System.EventHandler(this.elevSetpointBox_Leave);
             // 
             // label4
             // 
@@ -325,6 +334,12 @@
             this.packetCountLabel.TabIndex = 20;
             this.packetCountLabel.Text = "0";
             // 
+            // chartOptionsToolStripMenuItem
+            // 
+            this.chartOptionsToolStripMenuItem.Name = "chartOptionsToolStripMenuItem";
+            this.chartOptionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.chartOptionsToolStripMenuItem.Text = "Chart Options";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -354,7 +369,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "git";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.aziElevChart)).EndInit();
@@ -391,6 +406,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox packetStreamBox;
         private System.Windows.Forms.Label packetCountLabel;
+        private System.Windows.Forms.ToolStripMenuItem chartOptionsToolStripMenuItem;
     }
 }
 

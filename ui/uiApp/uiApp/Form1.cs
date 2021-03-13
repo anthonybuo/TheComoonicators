@@ -110,7 +110,11 @@ namespace uiApp
                 aziElevChart.Series[3].Points.AddXY(chartTime, double.Parse(aziSetpointBox.Text));
             }
 
+            if (pkt.switches.cwAzi)
+                aziElevChart.Series[4].Points.AddXY(chartTime, 0.25);
 
+            if (pkt.switches.ccwAzi)
+                aziElevChart.Series[5].Points.AddXY(chartTime, 0.25);
         }
 
         private void updatePacketStream(InPacket pkt)
@@ -205,6 +209,37 @@ namespace uiApp
         {
 
         }
+
+        private void aziSetpointBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void aziSetpointBox_Leave(object sender, EventArgs e)
+        {
+            try
+            {
+                double.Parse(aziSetpointBox.Text);
+            }
+            catch (System.FormatException)
+            {
+                aziSetpointBox.Text = "0";
+                MessageBox.Show("Input must be numerical");
+            }
+        }
+
+        private void elevSetpointBox_Leave(object sender, EventArgs e)
+        {
+            try
+            {
+                double.Parse(aziSetpointBox.Text);
+            }
+            catch (System.FormatException)
+            {
+                aziSetpointBox.Text = "0";
+                MessageBox.Show("Input must be numerical");
+            }
+        }
     }
 
     class Packet
@@ -221,13 +256,13 @@ namespace uiApp
         }
         internal double elevB2D(byte[] elevByte)
         {
-            double elevDouble = (double)(((int)elevByte[0] << 8) + elevByte[1]) * Form1.ELEV_DEG_PER_BIT;
+            double elevDouble = (double)((short)((short)elevByte[0] << 8) + elevByte[1]) * Form1.ELEV_DEG_PER_BIT;
             return elevDouble;
         }
 
         internal double aziB2D(byte[] aziByte)
         {
-            double aziDouble = (double)((int)aziByte[0] << 8 + aziByte[1]) * Form1.AZI_DEG_PER_BIT;
+            double aziDouble = (double)((short)((short)aziByte[0] << 8) + aziByte[1]) * Form1.AZI_DEG_PER_BIT;
             return aziDouble;
         }
 
@@ -251,17 +286,17 @@ namespace uiApp
 
     class InPacket : Packet
     { 
-        private struct errorStruct
+        public struct errorStruct
         {
             public bool elevOutOfBounds, aziOutOfBounds, speedOutOfBounds, accelerometerReadingUnrealistic, accelerometerNotCommunicating;
         }
-        private struct limitSwitchStruct
+        public struct limitSwitchStruct
         {
             public bool cwAzi, ccwAzi, vertElev, horiElev;
         }
 
-        limitSwitchStruct switches;
-        errorStruct errors;
+        public limitSwitchStruct switches;
+        public errorStruct errors;
         
         public InPacket(int packLen) : base(packLen)
         {
@@ -290,7 +325,7 @@ namespace uiApp
                         index = 0;
                         elev = base.elevB2D(temp2);
                         temp2[0] = data[3];
-                        temp2[0] = data[4];
+                        temp2[1] = data[4];
                         azi = base.aziB2D(temp2);
 
                         switches.cwAzi = (data[6] & 0b1) != 0;
