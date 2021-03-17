@@ -298,6 +298,17 @@ namespace uiApp
             updateOutPacketStream(outPackets[outPacketCount]);
             outPacketCount++;
         }
+
+        private void eStopButton_click(object sender, EventArgs e)
+        {
+            byte[] data = { 255, 0x08, 0, 0, 0, 0, 0, 0, 0 };
+            port.Write(data, data.Length, 0);
+
+            outPackets.Add(new OutPacket(OUT_PACKET_LEN));
+            outPackets[outPacketCount].data = data;
+
+            outPacketCount++;
+        }
     }
 
     class Packet
