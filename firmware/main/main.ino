@@ -29,7 +29,7 @@
 #define TIMER1_INTERRUPT_PERIOD_TICKS (TIMER1_ISR_PERIOD_MS / 1000) * (SYS_CLOCK_HZ / TIMER1_PRESCALER)
 
 // Timer2 Constants
-#define TIMER2_ISR_PERIOD_MS          10.0
+#define TIMER2_ISR_PERIOD_MS          1.0
 #define TIMER2_PRESCALER              256
 #define TIMER2_INTERRUPT_PERIOD_TICKS (TIMER2_ISR_PERIOD_MS / 1000) * (SYS_CLOCK_HZ / TIMER2_PRESCALER)
 
@@ -46,7 +46,7 @@ Stepper stepper(&packet_out, STEPPER_LEAD_0, STEPPER_LEAD_1, STEPPER_LEAD_2, STE
 LimitSwitch switch1(/*id*/0, &packet_out, &stepper, /*stepper_pos_ticks*/STEPPER_ROM_DEG / STEPPER_DEG_PER_TICK);
 LimitSwitch switch2(/*id*/1, &packet_out, &stepper, /*stepper_pos_ticks*/0);
 DCMotor dcmotor(&packet_out, DCMOTOR_LEAD_0, DCMOTOR_LEAD_1,
-                /*Kp*/0.1, /*Ki*/0, /*Kd*/0, /*period*/TIMER1_ISR_PERIOD_MS/1000, /*bias*/0);
+                /*Kp*/0.7, /*Ki*/0.075, /*Kd*/0, /*period*/TIMER1_ISR_PERIOD_MS/1000, /*bias*/0);
 
 // For testing
 bool enable_dcmotor = false;
@@ -188,7 +188,7 @@ void setup() {
   // Accelerometer
   LIS.begin(Wire, LIS3DHTR_ADDRESS_UPDATED);
   delay(100);
-  LIS.setOutputDataRate(LIS3DHTR_DATARATE_50HZ);
+  LIS.setOutputDataRate(LIS3DHTR_DATARATE_400HZ);
   LIS.setFullScaleRange(LIS3DHTR_RANGE_2G);
   if (!LIS) {
     packet_out.set_error(PacketOut::ACCELEROMETER_NO_COMM);
@@ -207,8 +207,10 @@ void setup() {
 // Arduino main loop
 void loop() {
   // Sample accelerometer
-  inclination_milli_rad = atan2(LIS.getAccelerationX(), LIS.getAccelerationY()) * 1000;
-  dcmotor.update_current_position(inclination_milli_rad);
+  inclination_milli_rad = (atan2(LIS.getAccelerationY(), LIS.getAccelerationZ()) + 3.14159) * 1000;
+  static double prev_inc = inclination_milli_rad;
+  dcmotor.update_current_position(0.75 * inclination_milli_rad + 0.25 * prev_inc);
+  prev_inc = inclination_milli_rad;
 
   // Limit switch debounce if necessary
   if (switch1.debounce_active_ && millis() > switch1.reattach_interrupt_time_) {
@@ -221,5 +223,5 @@ void loop() {
   // Get command packet
   poll_command();
 
-  delay(250);
+  delay(1);
 }
