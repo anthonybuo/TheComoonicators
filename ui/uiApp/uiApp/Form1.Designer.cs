@@ -73,6 +73,8 @@
             this.label10 = new System.Windows.Forms.Label();
             this.rawPacketButton = new System.Windows.Forms.Button();
             this.eStopButton = new System.Windows.Forms.Button();
+            this.elevSTDEVBox = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.aziElevChart)).BeginInit();
             this.SuspendLayout();
@@ -442,12 +444,31 @@
             this.eStopButton.UseVisualStyleBackColor = false;
             this.eStopButton.Click += new System.EventHandler(this.eStopButton_click);
             // 
+            // elevSTDEVBox
+            // 
+            this.elevSTDEVBox.Location = new System.Drawing.Point(584, 69);
+            this.elevSTDEVBox.Name = "elevSTDEVBox";
+            this.elevSTDEVBox.Size = new System.Drawing.Size(100, 20);
+            this.elevSTDEVBox.TabIndex = 30;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(581, 54);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(126, 13);
+            this.label11.TabIndex = 31;
+            this.label11.Text = "Elevation St Dev (100 pt)";
+            this.label11.Click += new System.EventHandler(this.label11_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.elevSTDEVBox);
             this.Controls.Add(this.eStopButton);
             this.Controls.Add(this.rawPacketButton);
             this.Controls.Add(this.label10);
@@ -528,6 +549,8 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button rawPacketButton;
         private System.Windows.Forms.Button eStopButton;
+        private System.Windows.Forms.TextBox elevSTDEVBox;
+        private System.Windows.Forms.Label label11;
     }
 }
 

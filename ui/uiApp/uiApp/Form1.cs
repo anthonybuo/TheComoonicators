@@ -96,6 +96,10 @@ namespace uiApp
 
             if (pkt.switches.ccwAzi)
                 aziElevChart.Series[5].Points.AddXY(chartTime, 0.25);
+
+            AddBollingerBands(ref inPackets, 100, 1);
+
+            elevSTDEVBox.Text = inPackets[inPacketCount].stdev.ToString();
         }
 
         private void updatePacketStream(InPacket pkt)
@@ -309,9 +313,40 @@ namespace uiApp
 
             outPacketCount++;
         }
+
+        public static void AddBollingerBands(ref List<InPacket> packetList, int period, int factor)
+        {
+            double total_average = 0;
+            double total_squares = 0;
+
+            for (int i = 0; i < packetList.Count; i++)
+            {
+                total_average += packetList[i].elev;
+                total_squares += Math.Pow(packetList[i].elev, 2);
+
+                if (i >= period - 1)
+                {
+                    double total_bollinger = 0;
+                    double average = total_average / period;
+
+                    double stdev = Math.Sqrt((total_squares - Math.Pow(total_average, 2) / period) / period);
+                    packetList[i].average = average;
+                    packetList[i].stdev = stdev;
+
+
+                    total_average -= packetList[i - period + 1].elev;
+                    total_squares -= Math.Pow(packetList[i - period + 1].elev, 2);
+                }
+            }
+        }
+
+        private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
-    class Packet
+    public class Packet
     {
         public byte[] data;
         public int index;
@@ -353,7 +388,7 @@ namespace uiApp
         }
     }
 
-    class InPacket : Packet
+    public class InPacket : Packet
     { 
         public struct errorStruct
         {
@@ -366,7 +401,10 @@ namespace uiApp
 
         public limitSwitchStruct switches;
         public errorStruct errors;
-        
+        public double stdev { get; internal set; }
+
+        public double average { get; internal set; }
+
         public InPacket(int packLen) : base(packLen)
         {
 
