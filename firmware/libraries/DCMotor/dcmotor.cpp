@@ -15,7 +15,7 @@ void DCMotor::tick() {
   double integral = integral_prev + error * period_;
 
   // decay integral term if near setpoint
-  if (abs(error) < 60) {  // ~3 deg
+  if (abs(error) < 15) {  // ~1 deg
     integral /= 1.03;
   }
 

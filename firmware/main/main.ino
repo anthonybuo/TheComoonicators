@@ -38,6 +38,9 @@
 #define TIMER5_PRESCALER              256
 #define TIMER5_INTERRUPT_PERIOD_TICKS (TIMER5_ISR_PERIOD_MS / 1000) * (SYS_CLOCK_HZ / TIMER5_PRESCALER)
 
+// Accelerometer Constants
+const double filter = 0.45;
+
 double inclination_milli_rad;
 PacketOut packet_out;
 PacketIn packet_in;
@@ -46,7 +49,7 @@ Stepper stepper(&packet_out, STEPPER_LEAD_0, STEPPER_LEAD_1, STEPPER_LEAD_2, STE
 LimitSwitch switch1(/*id*/0, &packet_out, &stepper, /*stepper_pos_ticks*/STEPPER_ROM_DEG / STEPPER_DEG_PER_TICK);
 LimitSwitch switch2(/*id*/1, &packet_out, &stepper, /*stepper_pos_ticks*/0);
 DCMotor dcmotor(&packet_out, DCMOTOR_LEAD_0, DCMOTOR_LEAD_1,
-                /*Kp*/0.7, /*Ki*/0.075, /*Kd*/0, /*period*/TIMER1_ISR_PERIOD_MS/1000, /*bias*/0);
+                /*Kp*/0.6, /*Ki*/0.125, /*Kd*/0, /*period*/TIMER1_ISR_PERIOD_MS/1000, /*bias*/0);
 
 // For testing
 bool enable_dcmotor = false;
@@ -188,7 +191,7 @@ void setup() {
   // Accelerometer
   LIS.begin(Wire, LIS3DHTR_ADDRESS_UPDATED);
   delay(100);
-  LIS.setOutputDataRate(LIS3DHTR_DATARATE_400HZ);
+  LIS.setOutputDataRate(LIS3DHTR_DATARATE_100HZ);
   LIS.setFullScaleRange(LIS3DHTR_RANGE_2G);
   if (!LIS) {
     packet_out.set_error(PacketOut::ACCELEROMETER_NO_COMM);
@@ -207,9 +210,12 @@ void setup() {
 // Arduino main loop
 void loop() {
   // Sample accelerometer
-  inclination_milli_rad = (atan2(LIS.getAccelerationY(), LIS.getAccelerationZ()) + 3.14159) * 1000;
+  double y = LIS.getAccelerationY();
+  double z = LIS.getAccelerationZ();
+  inclination_milli_rad = (atan2(y, z) + 3.14159) * 1000;
   static double prev_inc = inclination_milli_rad;
-  dcmotor.update_current_position(0.75 * inclination_milli_rad + 0.25 * prev_inc);
+  inclination_milli_rad = filter * inclination_milli_rad + (1-filter) * prev_inc;
+  dcmotor.update_current_position(inclination_milli_rad);
   prev_inc = inclination_milli_rad;
 
   // Limit switch debounce if necessary
@@ -223,5 +229,5 @@ void loop() {
   // Get command packet
   poll_command();
 
-  delay(1);
+  delay(10);
 }
