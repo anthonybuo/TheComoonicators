@@ -327,6 +327,22 @@ namespace uiApp
             outPacketCount++;
         }
 
+        private void setAzimuthButton_Click(object sender, EventArgs e)
+        {
+            if(!port.IsOpen)
+            {
+                MessageBox.Show("Port is closed");
+                return;
+            }
+            outPackets.Add(new OutPacket(OUT_PACKET_LEN));
+            double azimuth_setpoint = double.Parse(setAzimuthBox.Text);
+            outPackets[outPacketCount].pack(0x09, 0, azimuth_setpoint, 0);
+
+            port.Write(outPackets[outPacketCount].data, 0, outPackets[outPacketCount].PACKET_LENGTH);
+            updateOutPacketStream(outPackets[outPacketCount]);
+            outPacketCount++;
+        }
+
         public static void AddBollingerBands(ref List<InPacket> packetList, int period, int factor)
         {
             double total_average = 0;

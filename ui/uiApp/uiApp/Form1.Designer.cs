@@ -28,14 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series11 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series12 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,6 +75,8 @@
             this.eStopButton = new System.Windows.Forms.Button();
             this.elevSTDEVBox = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
+            this.setAzimuthBox = new System.Windows.Forms.TextBox();
+            this.setAzimuthButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.aziElevChart)).BeginInit();
             this.SuspendLayout();
@@ -261,48 +263,48 @@
             // 
             // aziElevChart
             // 
-            chartArea2.AxisX.Title = "Time (s)";
-            chartArea2.AxisY.Title = "Position (Degrees)";
-            chartArea2.AxisY2.Interval = 1D;
-            chartArea2.AxisY2.Maximum = 1D;
-            chartArea2.AxisY2.Minimum = 0D;
-            chartArea2.Name = "ChartArea1";
-            this.aziElevChart.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.aziElevChart.Legends.Add(legend2);
+            chartArea1.AxisX.Title = "Time (s)";
+            chartArea1.AxisY.Title = "Position (Degrees)";
+            chartArea1.AxisY2.Interval = 1D;
+            chartArea1.AxisY2.Maximum = 1D;
+            chartArea1.AxisY2.Minimum = 0D;
+            chartArea1.Name = "ChartArea1";
+            this.aziElevChart.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.aziElevChart.Legends.Add(legend1);
             this.aziElevChart.Location = new System.Drawing.Point(12, 200);
             this.aziElevChart.Name = "aziElevChart";
-            series7.ChartArea = "ChartArea1";
-            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series7.Legend = "Legend1";
-            series7.Name = "Elevation";
-            series8.ChartArea = "ChartArea1";
-            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series8.Legend = "Legend1";
-            series8.Name = "Azimuth";
-            series9.ChartArea = "ChartArea1";
-            series9.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StepLine;
-            series9.Legend = "Legend1";
-            series9.Name = "Elevation Setpoint";
-            series10.ChartArea = "ChartArea1";
-            series10.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StepLine;
-            series10.Legend = "Legend1";
-            series10.Name = "Azimuth Setpoint";
-            series11.BackImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            series11.ChartArea = "ChartArea1";
-            series11.Legend = "Legend1";
-            series11.Name = "CW Limit Switch";
-            series11.YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
-            series12.ChartArea = "ChartArea1";
-            series12.Legend = "Legend1";
-            series12.Name = "CCW Limit Switch";
-            series12.YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
-            this.aziElevChart.Series.Add(series7);
-            this.aziElevChart.Series.Add(series8);
-            this.aziElevChart.Series.Add(series9);
-            this.aziElevChart.Series.Add(series10);
-            this.aziElevChart.Series.Add(series11);
-            this.aziElevChart.Series.Add(series12);
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Legend = "Legend1";
+            series1.Name = "Elevation";
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Legend = "Legend1";
+            series2.Name = "Azimuth";
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StepLine;
+            series3.Legend = "Legend1";
+            series3.Name = "Elevation Setpoint";
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StepLine;
+            series4.Legend = "Legend1";
+            series4.Name = "Azimuth Setpoint";
+            series5.BackImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            series5.ChartArea = "ChartArea1";
+            series5.Legend = "Legend1";
+            series5.Name = "CW Limit Switch";
+            series5.YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
+            series6.ChartArea = "ChartArea1";
+            series6.Legend = "Legend1";
+            series6.Name = "CCW Limit Switch";
+            series6.YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
+            this.aziElevChart.Series.Add(series1);
+            this.aziElevChart.Series.Add(series2);
+            this.aziElevChart.Series.Add(series3);
+            this.aziElevChart.Series.Add(series4);
+            this.aziElevChart.Series.Add(series5);
+            this.aziElevChart.Series.Add(series6);
             this.aziElevChart.Size = new System.Drawing.Size(776, 238);
             this.aziElevChart.SuppressExceptions = true;
             this.aziElevChart.TabIndex = 14;
@@ -463,12 +465,31 @@
             this.label11.Text = "Elevation St Dev (100 pt)";
             this.label11.Click += new System.EventHandler(this.label11_Click);
             // 
+            // setAzimuthBox
+            // 
+            this.setAzimuthBox.Location = new System.Drawing.Point(406, 24);
+            this.setAzimuthBox.Name = "setAzimuthBox";
+            this.setAzimuthBox.Size = new System.Drawing.Size(100, 20);
+            this.setAzimuthBox.TabIndex = 32;
+            // 
+            // setAzimuthButton
+            // 
+            this.setAzimuthButton.Location = new System.Drawing.Point(512, 22);
+            this.setAzimuthButton.Name = "setAzimuthButton";
+            this.setAzimuthButton.Size = new System.Drawing.Size(177, 23);
+            this.setAzimuthButton.TabIndex = 33;
+            this.setAzimuthButton.Text = "Set Azimuth Position and Setpoint";
+            this.setAzimuthButton.UseVisualStyleBackColor = true;
+            this.setAzimuthButton.Click += new System.EventHandler(this.setAzimuthButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.setAzimuthButton);
+            this.Controls.Add(this.setAzimuthBox);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.elevSTDEVBox);
             this.Controls.Add(this.eStopButton);
@@ -553,6 +574,8 @@
         private System.Windows.Forms.Button eStopButton;
         private System.Windows.Forms.TextBox elevSTDEVBox;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox setAzimuthBox;
+        private System.Windows.Forms.Button setAzimuthButton;
     }
 }
 

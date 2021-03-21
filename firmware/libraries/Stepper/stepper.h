@@ -41,7 +41,7 @@ class Stepper {
         }
 
         // Set the stepper's current position. Should only be called by the
-        // limit switches for open loop control.
+        // limit switches for open loop control or for debugging purposes.
         void set_current_pos(uint16_t pos_ticks) {
             current_position_ = pos_ticks;
         }

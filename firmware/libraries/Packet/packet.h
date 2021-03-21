@@ -62,6 +62,7 @@ class PacketIn {
      GOTO_ELEVATION,
      GOTO_AZIMUTH,
      EMERGENCY_STOP,
+     SET_AZIMUTH,
    };
 
    // Reads a byte into one of this packet's data bytes.
