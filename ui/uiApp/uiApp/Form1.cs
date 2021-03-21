@@ -411,11 +411,11 @@ namespace uiApp
 
         public bool[] errors;
         public static string[] errorCodes = {
-            "Elevation command out of bounds",
-            "Azimuth command out of bounds",
-            "Speed command out of bounds",
-            "Accelerometer reading unrealistic",
-            "Accelerometer not communicating" };
+            "Elevation command out of bounds\r\n",
+            "Azimuth command out of bounds\r\n",
+            "Speed command out of bounds\r\n",
+            "Accelerometer reading unrealistic\r\n",
+            "Accelerometer not communicating\r\n" };
 
         public double stdev { get; internal set; }
 

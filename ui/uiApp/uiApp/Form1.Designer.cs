@@ -323,8 +323,10 @@
             this.errorStreamBox.Location = new System.Drawing.Point(210, 111);
             this.errorStreamBox.Multiline = true;
             this.errorStreamBox.Name = "errorStreamBox";
+            this.errorStreamBox.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.errorStreamBox.Size = new System.Drawing.Size(190, 83);
             this.errorStreamBox.TabIndex = 16;
+            this.errorStreamBox.WordWrap = false;
             // 
             // label6
             // 
