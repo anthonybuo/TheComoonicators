@@ -3,6 +3,7 @@
 #include "stepper.h"
 #include "dcmotor.h"
 #include "packet.h"
+#include "low_pass_filter.h"
 #include <Math.h>
 
 // System Constants
@@ -38,9 +39,6 @@
 #define TIMER5_PRESCALER              256
 #define TIMER5_INTERRUPT_PERIOD_TICKS (TIMER5_ISR_PERIOD_MS / 1000) * (SYS_CLOCK_HZ / TIMER5_PRESCALER)
 
-// Accelerometer Constants
-const double filter = 0.45;
-
 double inclination_milli_rad;
 PacketOut packet_out;
 PacketIn packet_in;
@@ -50,6 +48,7 @@ LimitSwitch switch1(/*id*/0, &packet_out, &stepper, /*stepper_pos_ticks*/STEPPER
 LimitSwitch switch2(/*id*/1, &packet_out, &stepper, /*stepper_pos_ticks*/0);
 DCMotor dcmotor(&packet_out, DCMOTOR_LEAD_0, DCMOTOR_LEAD_1,
                 /*Kp*/0.6, /*Ki*/0.125, /*Kd*/0, /*period*/TIMER1_ISR_PERIOD_MS/1000, /*bias*/0);
+LowPassFilter LPF(0.45);
 
 // For testing
 bool enable_dcmotor = false;
@@ -212,11 +211,11 @@ void loop() {
   // Sample accelerometer
   double y = LIS.getAccelerationY();
   double z = LIS.getAccelerationZ();
+
+  // Convert acceleration to antenna reference frame
   inclination_milli_rad = (atan2(y, z) + 3.14159) * 1000;
-  static double prev_inc = inclination_milli_rad;
-  inclination_milli_rad = filter * inclination_milli_rad + (1-filter) * prev_inc;
+  inclination_milli_rad = LPF.filter(inclination_milli_rad);
   dcmotor.update_current_position(inclination_milli_rad);
-  prev_inc = inclination_milli_rad;
 
   // Limit switch debounce if necessary
   if (switch1.debounce_active_ && millis() > switch1.reattach_interrupt_time_) {
