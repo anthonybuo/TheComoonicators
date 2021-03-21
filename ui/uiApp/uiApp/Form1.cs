@@ -70,6 +70,7 @@ namespace uiApp
                     elevBox.Text = inPackets[inPacketCount].elev.ToString();
                     updateChart(inPackets[inPacketCount]);
                     updatePacketStream(inPackets[inPacketCount]);
+                    updateErrorStream(inPackets[inPacketCount]);
                     inPacketCount++;
                     inPackets.Add(new InPacket(IN_PACKET_LEN));
                 }
@@ -77,6 +78,15 @@ namespace uiApp
             while(filledPacketBool == 1);
             packetCountLabel.Text = inPacketCount.ToString();
             int breakpoint = 1;
+        }
+
+        private void updateErrorStream(InPacket pkt)
+        {
+            for (int i = 0; i < InPacket.errorCodes.Length; i++)
+            {
+                if (pkt.errors[i])
+                    errorStreamBox.AppendText(InPacket.errorCodes[i]);
+            }
         }
 
         private void updateChart(InPacket pkt)
@@ -100,6 +110,8 @@ namespace uiApp
             AddBollingerBands(ref inPackets, 100, 1);
 
             elevSTDEVBox.Text = inPackets[inPacketCount].stdev.ToString();
+
+            
         }
 
         private void updatePacketStream(InPacket pkt)
@@ -390,24 +402,28 @@ namespace uiApp
 
     public class InPacket : Packet
     { 
-        public struct errorStruct
-        {
-            public bool elevOutOfBounds, aziOutOfBounds, speedOutOfBounds, accelerometerReadingUnrealistic, accelerometerNotCommunicating;
-        }
         public struct limitSwitchStruct
         {
             public bool cwAzi, ccwAzi, vertElev, horiElev;
         }
 
         public limitSwitchStruct switches;
-        public errorStruct errors;
+
+        public bool[] errors;
+        public static string[] errorCodes = {
+            "Elevation command out of bounds",
+            "Azimuth command out of bounds",
+            "Speed command out of bounds",
+            "Accelerometer reading unrealistic",
+            "Accelerometer not communicating" };
+
         public double stdev { get; internal set; }
 
         public double average { get; internal set; }
 
         public InPacket(int packLen) : base(packLen)
         {
-
+            errors = new bool[errorCodes.Length];
         }
         public int unpack(ConcurrentQueue<byte> bytes)
         {
@@ -440,11 +456,10 @@ namespace uiApp
                         switches.vertElev = (data[6] & 0b100) != 0;
                         switches.horiElev = (data[6] & 0b1000) != 0;
 
-                        errors.elevOutOfBounds = (data[7] & 0b1) != 0;
-                        errors.aziOutOfBounds = (data[7] & 0b10) != 0;
-                        errors.speedOutOfBounds = (data[7] & 0b100) != 0;
-                        errors.accelerometerReadingUnrealistic = (data[7] & 0b1000) != 0;
-                        errors.accelerometerNotCommunicating = (data[7] & 0b100000) != 0;
+                        for (int i = 0; i < errorCodes.Length; i++)
+                        {
+                            errors[i] = (data[7] & (int)Math.Pow(2, i)) != 0;
+                        }
 
                         return 1; //sucessfully filled a packet
                     }
