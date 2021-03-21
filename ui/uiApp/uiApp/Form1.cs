@@ -82,10 +82,13 @@ namespace uiApp
 
         private void updateErrorStream(InPacket pkt)
         {
+            errorStreamBox.Clear();
             for (int i = 0; i < InPacket.errorCodes.Length; i++)
             {
                 if (pkt.errors[i])
+                {
                     errorStreamBox.AppendText(InPacket.errorCodes[i]);
+                }
             }
         }
 
