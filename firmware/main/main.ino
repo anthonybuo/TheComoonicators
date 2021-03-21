@@ -155,6 +155,9 @@ void update_antenna_settings() {
       stepper.set_target_position(packet_in.azimuth_hi, packet_in.azimuth_lo);
       enable_stepper = true;
       break;
+    case PacketIn::EMERGENCY_STOP:
+      enable_dcmotor = false;
+      enable_stepper = false;
     default:
       break;
   }

@@ -61,6 +61,7 @@ class PacketIn {
      MUSIC,
      GOTO_ELEVATION,
      GOTO_AZIMUTH,
+     EMERGENCY_STOP,
    };
 
    // Reads a byte into one of this packet's data bytes.
