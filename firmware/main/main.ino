@@ -117,8 +117,15 @@ ISR(TIMER2_COMPA_vect) {
 ISR(TIMER5_COMPA_vect) {
   // Gather vitals to send
   stepper.get_current_position(&packet_out.azimuth_hi, &packet_out.azimuth_lo);
-  packet_out.elevation_hi = (((int)inclination_milli_rad & 0xFF00) >> 8);
-  packet_out.elevation_lo = ((int)inclination_milli_rad & 0xFF);
+  // Use MSB of elevation_hi as sign bit
+  if (inclination_milli_rad < 0) {
+    packet_out.elevation_hi = (1 << 7) | (((int)inclination_milli_rad*-1 & 0xFF00) >> 8);
+    packet_out.elevation_lo = ((int)inclination_milli_rad*-1 & 0xFF);
+  } else {
+    packet_out.elevation_hi = (((int)inclination_milli_rad & 0xFF00) >> 8);
+    packet_out.elevation_lo = ((int)inclination_milli_rad & 0xFF);
+  }
+
   packet_out.sample_rate = 1000 / TIMER5_ISR_PERIOD_MS;
   Serial.write(packet_out.serialize(), PacketOut::PACKET_SIZE);
   packet_out.clear_limit_switch();
@@ -220,9 +227,24 @@ void loop() {
   double z = LIS.getAccelerationZ();
 
   // Convert acceleration to antenna reference frame
-  inclination_milli_rad = (atan2(y, z) + 3.14159) * 1000;
+  if (y < 0) {
+    inclination_milli_rad = (atan2(y, z) + PI) * 1000;
+  }
+  else {
+    inclination_milli_rad = (atan2(y, z) - PI) * 1000;
+  }
+
+  // Filter the noisy reading
   inclination_milli_rad = LPF.filter(inclination_milli_rad);
-  dcmotor.update_current_position(inclination_milli_rad);
+
+  // Update dc motor with accel reading if in bounds
+  if (!dcmotor.in_desired_rom(inclination_milli_rad)) {
+    packet_out.set_error(PacketOut::ACCELEROMETER_READING_OOB);
+    dcmotor.idle();
+  } else {
+    packet_out.clear_error(PacketOut::ACCELEROMETER_READING_OOB);
+    dcmotor.update_current_position(inclination_milli_rad);
+  }
 
   // Limit switch debounce if necessary
   if (switch1.debounce_active_ && millis() > switch1.reattach_interrupt_time_) {

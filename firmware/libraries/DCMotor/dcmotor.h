@@ -20,16 +20,37 @@ class DCMotor {
       // Turn off
       void idle();
 
-      // Setters
-      void set_target_position(uint8_t hi, uint8_t lo) {
-        target_pos_ = ((hi << 8) | lo);
+      // Update the set point if command is valid, otherwise idle
+      void set_target_position(const uint8_t hi, const uint8_t lo) {
+        const double command = ((hi << 8) | lo);
+        if (in_desired_rom(command)) {
+          packet_out_->clear_error(PacketOut::ELEVATION_COMMAND_OOB);
+          target_pos_ = command;
+        } else {
+          packet_out_->set_error(PacketOut::ELEVATION_COMMAND_OOB);
+          idle();
+        }
       }
-      void update_current_position(double pos) {
+
+      // Update current position
+      void update_current_position(const double pos) {
         curr_pos_ = pos;
+      }
+
+      // Check if command is within bounds
+      bool in_desired_rom(const double command) {
+        if (command > max_rom_mrad_ || command < min_rom_mrad_) {
+          return false;
+        }
+        return true;
       }
 
       // Control command
       void tick();
+
+      // Allowable range of motion just beyond 0deg to 90deg
+      const double max_rom_mrad_ = (HALF_PI * 1000) + (3 * DEG_TO_RAD * 1000);
+      const double min_rom_mrad_ = -2 * DEG_TO_RAD * 1000;
 
   private:
     // PID parameters
