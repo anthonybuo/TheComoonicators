@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.IO.Ports;
 using System.Windows.Forms;
 
@@ -24,6 +25,8 @@ namespace uiApp
         public const double ELEV_DEG_PER_BIT = 0.057;
 
         double chartTime = 0;
+
+        int position = 0;
 
         public Form1()
         {
@@ -375,6 +378,87 @@ namespace uiApp
         private void label11_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void browseButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Select Command File";
+            openFileDialog.ShowDialog();
+
+            // If the file name is not an empty string open it for saving.
+            if (openFileDialog.FileName == "")
+            {
+                return;
+            }
+
+            string[] cmdString = System.IO.File.ReadAllLines(openFileDialog.FileName);
+
+            for (int i = 0; i < cmdString.Length; i++)
+            {
+                cmdBox.AppendText(cmdString[i]);
+                cmdBox.AppendText(Environment.NewLine);
+                //cmdDataGrid.Rows[i].Cells[1].Value = cmdString[i];
+                //cmdDataGrid.Rows.Add();
+            }
+
+            position = 0;
+            cmdBox.Text = cmdBox.Text.Insert(position, ">>");
+        }
+
+        private void upButton_Click(object sender, EventArgs e)
+        {
+            if (position <= 0)
+            {
+                return;
+            }
+            cmdBox.Text = cmdBox.Text.Replace(">>", "");
+
+            position = cmdBox.Text.LastIndexOf("\n", position - 2);
+
+            position++;
+
+            cmdBox.Text = cmdBox.Text.Insert(position, ">>");
+
+            cmdBox.Select(position, 0);
+            cmdBox.ScrollToCaret();
+        }
+
+        private void downButton_Click(object sender, EventArgs e)
+        {
+            cmdBox.Text = cmdBox.Text.Replace(">>", "");
+            int prevPosition = position;
+            position = cmdBox.Text.IndexOf("\n", position);
+
+            position++;
+
+            if (position >= cmdBox.Text.Length || position == -1)
+                position = prevPosition;
+
+            cmdBox.Text = cmdBox.Text.Insert(position, ">>");
+
+            cmdBox.Select(position, 0);
+            cmdBox.ScrollToCaret();
+        }
+
+        private void sendButton_Click(object sender, EventArgs e)
+        {
+            StringReader reader = new StringReader(cmdBox.Text.Substring(position));
+            string cmd = reader.ReadLine();
+            cmd.Replace(">>", "");
+
+            byte[] cmdBytes = StringToByteArrayFastest(cmd);
+
+            if (!port.IsOpen)
+            {
+                MessageBox.Show("Port is closed");
+                return;
+            }
+            outPackets.Add(new OutPacket(OUT_PACKET_LEN));
+            outPackets[outPacketCount].data = cmdBytes;
+            port.Write(outPackets[outPacketCount].data, 0, outPackets[outPacketCount].PACKET_LENGTH);
+            updateOutPacketStream(outPackets[outPacketCount]);
+            outPacketCount++;
         }
     }
 

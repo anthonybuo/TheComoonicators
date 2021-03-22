@@ -77,6 +77,13 @@
             this.label11 = new System.Windows.Forms.Label();
             this.setAzimuthBox = new System.Windows.Forms.TextBox();
             this.setAzimuthButton = new System.Windows.Forms.Button();
+            this.sendButton = new System.Windows.Forms.Button();
+            this.downButton = new System.Windows.Forms.Button();
+            this.upButton = new System.Windows.Forms.Button();
+            this.cmdBox = new System.Windows.Forms.TextBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.browseButton = new System.Windows.Forms.Button();
+            this.label12 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.aziElevChart)).BeginInit();
             this.SuspendLayout();
@@ -88,7 +95,7 @@
             this.optionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(800, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1077, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -482,12 +489,84 @@
             this.setAzimuthButton.UseVisualStyleBackColor = true;
             this.setAzimuthButton.Click += new System.EventHandler(this.setAzimuthButton_Click);
             // 
+            // sendButton
+            // 
+            this.sendButton.Location = new System.Drawing.Point(978, 423);
+            this.sendButton.Name = "sendButton";
+            this.sendButton.Size = new System.Drawing.Size(87, 23);
+            this.sendButton.TabIndex = 39;
+            this.sendButton.Text = "Send";
+            this.sendButton.UseVisualStyleBackColor = true;
+            this.sendButton.Click += new System.EventHandler(this.sendButton_Click);
+            // 
+            // downButton
+            // 
+            this.downButton.Location = new System.Drawing.Point(886, 423);
+            this.downButton.Name = "downButton";
+            this.downButton.Size = new System.Drawing.Size(87, 23);
+            this.downButton.TabIndex = 38;
+            this.downButton.Text = "Down";
+            this.downButton.UseVisualStyleBackColor = true;
+            this.downButton.Click += new System.EventHandler(this.downButton_Click);
+            // 
+            // upButton
+            // 
+            this.upButton.Location = new System.Drawing.Point(794, 423);
+            this.upButton.Name = "upButton";
+            this.upButton.Size = new System.Drawing.Size(87, 23);
+            this.upButton.TabIndex = 37;
+            this.upButton.Text = "Up";
+            this.upButton.UseVisualStyleBackColor = true;
+            this.upButton.Click += new System.EventHandler(this.upButton_Click);
+            // 
+            // cmdBox
+            // 
+            this.cmdBox.Location = new System.Drawing.Point(794, 71);
+            this.cmdBox.Multiline = true;
+            this.cmdBox.Name = "cmdBox";
+            this.cmdBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.cmdBox.Size = new System.Drawing.Size(271, 346);
+            this.cmdBox.TabIndex = 36;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(794, 45);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(190, 20);
+            this.textBox1.TabIndex = 35;
+            // 
+            // browseButton
+            // 
+            this.browseButton.Location = new System.Drawing.Point(990, 43);
+            this.browseButton.Name = "browseButton";
+            this.browseButton.Size = new System.Drawing.Size(75, 23);
+            this.browseButton.TabIndex = 34;
+            this.browseButton.Text = "Browse";
+            this.browseButton.UseVisualStyleBackColor = true;
+            this.browseButton.Click += new System.EventHandler(this.browseButton_Click);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(794, 31);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(89, 13);
+            this.label12.TabIndex = 40;
+            this.label12.Text = "Command Queue";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1077, 450);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.sendButton);
+            this.Controls.Add(this.downButton);
+            this.Controls.Add(this.upButton);
+            this.Controls.Add(this.cmdBox);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.browseButton);
             this.Controls.Add(this.setAzimuthButton);
             this.Controls.Add(this.setAzimuthBox);
             this.Controls.Add(this.label11);
@@ -576,6 +655,13 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox setAzimuthBox;
         private System.Windows.Forms.Button setAzimuthButton;
+        private System.Windows.Forms.Button sendButton;
+        private System.Windows.Forms.Button downButton;
+        private System.Windows.Forms.Button upButton;
+        private System.Windows.Forms.TextBox cmdBox;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button browseButton;
+        private System.Windows.Forms.Label label12;
     }
 }
 
