@@ -476,7 +476,17 @@ namespace uiApp
         }
         internal double elevB2D(byte[] elevByte)
         {
-            double elevDouble = (double)((short)((short)elevByte[0] << 8) + elevByte[1]) * Form1.ELEV_DEG_PER_BIT;
+            double elevDouble;
+            // Most significant bit represents the elevation's sign
+            if (elevByte[0] >> 7 != 0)
+            {
+                elevByte[0] &= byte.MaxValue ^ (1 << 7);
+                elevDouble = -1 * (double)((short)((short)elevByte[0] << 8) + elevByte[1]) * Form1.ELEV_DEG_PER_BIT;
+            } else
+            {
+                elevDouble = (double)((short)((short)elevByte[0] << 8) + elevByte[1]) * Form1.ELEV_DEG_PER_BIT;
+
+            }
             return elevDouble;
         }
 
