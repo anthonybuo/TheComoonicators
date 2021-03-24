@@ -51,6 +51,7 @@ namespace uiApp
 
             aziElevChart.Series[4].Color = Color.FromArgb(64, 60, 60, 60);
             aziElevChart.Series[4].Color = Color.FromArgb(64, 60, 0, 60);
+            aziElevChart.ChartAreas[0].AxisX.LabelStyle.Format = "0.000";
 
             uiTimer = new System.Windows.Forms.Timer();
             uiTimer.Interval = 100;
@@ -355,6 +356,22 @@ namespace uiApp
             outPacketCount++;
         }
 
+        private void homeButton_MouseClick(object sender, MouseEventArgs e)
+        {
+            if(!port.IsOpen)
+            {
+                MessageBox.Show("Port is closed");
+                return;
+            }
+            outPackets.Add(new OutPacket(OUT_PACKET_LEN));
+            outPackets[outPacketCount].pack(0x02, 0, 0, 0);
+
+            port.Write(outPackets[outPacketCount].data, 0, outPackets[outPacketCount].PACKET_LENGTH);
+            updateOutPacketStream(outPackets[outPacketCount]);
+            outPacketCount++;
+
+        }
+
         public static void AddBollingerBands(ref List<InPacket> packetList, int period, int factor)
         {
             double total_average = 0;
@@ -468,6 +485,7 @@ namespace uiApp
             updateOutPacketStream(outPackets[outPacketCount]);
             outPacketCount++;
         }
+
     }
 
     public class Packet

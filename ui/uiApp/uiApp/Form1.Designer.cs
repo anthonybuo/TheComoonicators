@@ -84,6 +84,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.browseButton = new System.Windows.Forms.Button();
             this.label12 = new System.Windows.Forms.Label();
+            this.homeButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.aziElevChart)).BeginInit();
             this.SuspendLayout();
@@ -554,12 +555,23 @@
             this.label12.TabIndex = 40;
             this.label12.Text = "Command Queue";
             // 
+            // homeButton
+            // 
+            this.homeButton.Location = new System.Drawing.Point(288, 21);
+            this.homeButton.Name = "homeButton";
+            this.homeButton.Size = new System.Drawing.Size(87, 23);
+            this.homeButton.TabIndex = 41;
+            this.homeButton.Text = "Go To Home";
+            this.homeButton.UseVisualStyleBackColor = true;
+            this.homeButton.MouseClick += new System.Windows.Forms.MouseEventHandler(this.homeButton_MouseClick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1077, 450);
+            this.Controls.Add(this.homeButton);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.sendButton);
             this.Controls.Add(this.downButton);
@@ -662,6 +674,7 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button browseButton;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Button homeButton;
     }
 }
 
