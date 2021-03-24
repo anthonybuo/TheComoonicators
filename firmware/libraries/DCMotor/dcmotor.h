@@ -21,8 +21,17 @@ class DCMotor {
       void idle();
 
       // Update the set point if command is valid, otherwise idle
-      void set_target_position(const uint8_t hi, const uint8_t lo) {
-        const double command = ((hi << 8) | lo);
+      void set_target_position(uint8_t hi, const uint8_t lo) {
+        double command;
+
+        // Most significant bit of hi byte is a sign bit
+        if ((hi & (1 << 7)) != 0) {
+          hi &= ~(1 << 7);
+          command = -1 * ((hi << 8) | lo);
+        } else {
+          command = ((hi << 8) | lo);
+        }
+
         if (in_desired_rom(command)) {
           packet_out_->clear_error(PacketOut::ELEVATION_COMMAND_OOB);
           target_pos_ = command;
@@ -39,7 +48,7 @@ class DCMotor {
 
       // Check if command is within bounds
       bool in_desired_rom(const double command) {
-        if (command > max_rom_mrad_ || command < min_rom_mrad_) {
+        if ((command > max_rom_mrad_) || (command < min_rom_mrad_)) {
           return false;
         }
         return true;
@@ -50,7 +59,7 @@ class DCMotor {
 
       // Allowable range of motion just beyond 0deg to 90deg
       const double max_rom_mrad_ = (HALF_PI * 1000) + (3 * DEG_TO_RAD * 1000);
-      const double min_rom_mrad_ = -2 * DEG_TO_RAD * 1000;
+      const double min_rom_mrad_ = -5 * DEG_TO_RAD * 1000;
 
   private:
     // PID parameters

@@ -23,6 +23,8 @@
 #define STEPPER_DEG_PER_TICK   0.04
 #define STEPPER_ROM_DEG        370
 #define STEPPER_HOME_POS_TICKS (STEPPER_ROM_DEG / 2 / STEPPER_DEG_PER_TICK)
+#define STEPPER_BACKLASH_DEG   2.3  // estimate
+#define STEPPER_BACKLASH_TICKS STEPPER_BACKLASH_DEG / STEPPER_DEG_PER_TICK
 
 // Timer1 Constants
 #define TIMER1_ISR_PERIOD_MS          10.0
@@ -43,7 +45,7 @@ double inclination_milli_rad;
 PacketOut packet_out;
 PacketIn packet_in;
 LIS3DHTR<TwoWire> LIS;
-Stepper stepper(&packet_out, STEPPER_LEAD_0, STEPPER_LEAD_1, STEPPER_LEAD_2, STEPPER_LEAD_3);
+Stepper stepper(&packet_out, STEPPER_LEAD_0, STEPPER_LEAD_1, STEPPER_LEAD_2, STEPPER_LEAD_3, /*backlash_compensation_ticks*/STEPPER_BACKLASH_TICKS);
 LimitSwitch switch1(/*id*/0, &packet_out, &stepper, /*stepper_pos_ticks*/STEPPER_ROM_DEG / STEPPER_DEG_PER_TICK);
 LimitSwitch switch2(/*id*/1, &packet_out, &stepper, /*stepper_pos_ticks*/0);
 DCMotor dcmotor(&packet_out, DCMOTOR_LEAD_0, DCMOTOR_LEAD_1,

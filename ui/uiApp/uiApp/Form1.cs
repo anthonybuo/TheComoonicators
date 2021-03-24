@@ -445,7 +445,9 @@ namespace uiApp
         {
             StringReader reader = new StringReader(cmdBox.Text.Substring(position));
             string cmd = reader.ReadLine();
-            cmd.Replace(">>", "");
+            cmd = cmd.Replace(">>", "");
+            cmd = cmd.Replace("-", "");
+            cmd = cmd.ToLower();
 
             byte[] cmdBytes = StringToByteArrayFastest(cmd);
 
@@ -499,6 +501,11 @@ namespace uiApp
         internal byte[] elevD2B(double elevIn)
         {
             int elevInt = (int)(elevIn / Form1.ELEV_DEG_PER_BIT);
+            if (elevIn < 0)
+            {
+                elevInt = (int)(Math.Abs(elevIn) / Form1.ELEV_DEG_PER_BIT);
+                elevInt |= (1 << 15);
+            }
             byte[] elevByte = new byte[2];
             elevByte[0] = (byte)(elevInt >> 8);
             elevByte[1] = (byte)elevInt;

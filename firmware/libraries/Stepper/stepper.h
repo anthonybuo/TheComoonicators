@@ -7,15 +7,18 @@
 class Stepper {
     public:
         Stepper(PacketOut* packet_out, unsigned int pin1, unsigned int pin2,
-                unsigned int pin3, unsigned int pin4)
+                unsigned int pin3, unsigned int pin4, unsigned int backlash_steps)
             : packet_out_(packet_out), pin1_(pin1), pin2_(pin2), pin3_(pin3),
-              pin4_(pin4) {}
+              pin4_(pin4), backlash_steps_(backlash_steps) {}
 
         // Initialize the stepper's control pins
         void init(void);
 
-        // Do a single step of the motor
+        // Do a single control action of the motor
         void tick(void);
+
+        // Do a single step of the motor
+        void step(const bool update_position);
 
         // Send zero current to the motor
         void idle(void);
@@ -60,8 +63,11 @@ class Stepper {
         }
 
     private:
+        // Stepping index
+        int i_ = 0;
+
         // Current stepper direction: -1 backwards, 1 forwards
-        volatile int direction = 1;
+        volatile int direction_ = 1;
 
         // Current position
         volatile unsigned int current_position_ = 0;
@@ -96,6 +102,9 @@ class Stepper {
 
         // Max valid target position
         const unsigned int max_target_position_ = range_of_motion_deg_ / resolution_deg_per_bit_;
+
+        // Backlash in gearbox in steps (based on preliminary measurements)
+        unsigned int backlash_steps_ = 0;
 };
 
 #endif  // _STEPPER_H_
