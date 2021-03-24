@@ -21,7 +21,7 @@
 
 // Stepper Constants
 #define STEPPER_DEG_PER_TICK   0.04
-#define STEPPER_ROM_DEG        380
+#define STEPPER_ROM_DEG        370
 #define STEPPER_HOME_POS_TICKS (STEPPER_ROM_DEG / 2 / STEPPER_DEG_PER_TICK)
 
 // Timer1 Constants
