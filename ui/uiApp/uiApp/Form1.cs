@@ -97,8 +97,16 @@ namespace uiApp
 
         private void updateChart(InPacket pkt)
         {
-            chartTime += 1; // / InPacket.freqB2D(pkt.data[5]);
-            //TODO change this back to frequency calc once implemented
+            // Rate at which packets are sent from microcontroller
+            double sample_frequency = pkt.data[5];
+            if (sample_frequency != 0)
+            {
+                chartTime += (1 / sample_frequency);
+            } else
+            {
+                // error
+            }
+
             aziElevChart.Series[0].Points.AddXY(chartTime, pkt.elev);
             aziElevChart.Series[1].Points.AddXY(chartTime, pkt.azi);
             if(outPackets.Count > 0)
@@ -116,8 +124,6 @@ namespace uiApp
             AddBollingerBands(ref inPackets, 100, 1);
 
             elevSTDEVBox.Text = inPackets[inPacketCount].stdev.ToString();
-
-            
         }
 
         private void updatePacketStream(InPacket pkt)
