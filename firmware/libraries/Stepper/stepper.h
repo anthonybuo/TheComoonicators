@@ -81,7 +81,7 @@ class Stepper {
         // Half stepping lookup
         static constexpr unsigned int NUM_STEPPER_INSTR = 4;
         static constexpr unsigned int NUM_STEPPER_LEADS = 4;
-        const int half_step_[NUM_STEPPER_INSTR][NUM_STEPPER_LEADS] = {
+        const int full_step_[NUM_STEPPER_INSTR][NUM_STEPPER_LEADS] = {
             {0, 1, 1, 0},
             {0, 1, 0, 1},
             {1, 0, 0, 1},

@@ -32,10 +32,10 @@ void Stepper::tick(void) {
   direction = current_position_ < target_position_ ? 1 : -1;
 
   // Stepper command
-  analogWrite(pin1_, half_step_[i][0] * duty_cycle_);
-  analogWrite(pin2_, half_step_[i][1] * duty_cycle_);
-  analogWrite(pin3_, half_step_[i][2] * duty_cycle_);
-  analogWrite(pin4_, half_step_[i][3] * duty_cycle_);
+  analogWrite(pin1_, full_step_[i][0] * duty_cycle_);
+  analogWrite(pin2_, full_step_[i][1] * duty_cycle_);
+  analogWrite(pin3_, full_step_[i][2] * duty_cycle_);
+  analogWrite(pin4_, full_step_[i][3] * duty_cycle_);
 
   // Update position
   current_position_ += direction;
