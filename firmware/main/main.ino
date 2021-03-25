@@ -183,6 +183,11 @@ void poll_command() {
   while (Serial.available()) {
     unsigned char serial_data = Serial.read();
     static unsigned int state = 0;
+
+    // Wait for start byte
+    if ((state == 0) && (serial_data != 255)) {
+      continue;
+    }
     
     if ((state == 0) && (serial_data == 255)) {
       // Read the start byte (unused)
