@@ -18,6 +18,7 @@ namespace uiApp
         List<OutPacket> outPackets;
         Int32 inPacketCount = 0;
         Int32 outPacketCount = 0;
+        BoundsChecker bounds_checker = new BoundsChecker();
 
         public const int IN_PACKET_LEN = 9;
         public const int OUT_PACKET_LEN = 9;
@@ -81,12 +82,13 @@ namespace uiApp
             }
             while(filledPacketBool == 1);
             packetCountLabel.Text = inPacketCount.ToString();
-            int breakpoint = 1;
+            outpacketCountLabel.Text = outPacketCount.ToString();
         }
 
         private void updateErrorStream(InPacket pkt)
         {
             errorStreamBox.Clear();
+            errorStreamBox.AppendText(bounds_checker.error_message);
             for (int i = 0; i < InPacket.errorCodes.Length; i++)
             {
                 if (pkt.errors[i])
@@ -191,17 +193,23 @@ namespace uiApp
                 MessageBox.Show("Port is closed");
                 return;
             }
-            outPackets.Add(new OutPacket(OUT_PACKET_LEN));
-            double azi, elev;
-            azi = double.Parse(aziSetpointBox.Text);
-            elev = double.Parse(elevSetpointBox.Text);
+
+            // Parse text boxes for set point
+            double azi = double.Parse(aziSetpointBox.Text);
+            double elev = double.Parse(elevSetpointBox.Text);
             short speed = short.Parse(speedTextBox.Text);
+
+            // Make sure the set point will not cause an internal collision within the antenna
+            if (bounds_checker.within_bounds(azi, elev))
+            {
+                return;
+            }
+
+            // Send the valid command
+            outPackets.Add(new OutPacket(OUT_PACKET_LEN));
             outPackets[outPacketCount].pack(cmd, elev, azi, speed);
-
             port.Write(outPackets[outPacketCount].data, 0, outPackets[outPacketCount].PACKET_LENGTH);
-
             updateOutPacketStream(outPackets[outPacketCount]);
-
             outPacketCount++;
         }
 
@@ -676,6 +684,48 @@ namespace uiApp
             }
 
             return data;
+        }
+    }
+
+    class BoundsChecker
+    {
+        public struct Bound
+        {
+            public Bound(double azi_l, double azi_u, double elev_l, double elev_u)
+            {
+                azimuth_lower = azi_l;
+                azimuth_upper = azi_u;
+                elevation_lower = elev_l;
+                elevation_upper = elev_u;
+            }
+            public double azimuth_lower, azimuth_upper, elevation_lower, elevation_upper;
+        }
+
+        // Add any bounds to which the antenna shouldn't move to here.
+        private Bound[] bounds = { new Bound(165, 205, -3, 5) };
+
+        // The standard error message when a set point is within the error bounds.
+        private string error_message_template = "Packet not sent, causes collision";
+
+        // The current error. Will be an empty string when no error is set.
+        public string error_message = "";
+
+        public bool within_bounds(double azimuth_setpoint, double elevation_setpoint)
+        {
+            for (int i = 0; i < bounds.GetLength(0); i++)
+            {
+                // Check if setpoint is inside bounds
+                if (azimuth_setpoint > bounds[i].azimuth_lower
+                    && azimuth_setpoint < bounds[i].azimuth_upper
+                    && elevation_setpoint > bounds[i].elevation_lower
+                    && elevation_setpoint < bounds[i].elevation_upper)
+                {
+                    error_message = error_message_template;
+                    return true;
+                }
+            }
+            error_message = "";
+            return false;
         }
     }
 }
