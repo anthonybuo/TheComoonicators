@@ -13,6 +13,12 @@ void Stepper::tick(void) {
   // Direction changed flag
   static unsigned int backlash_compensation_remaining = 0;
 
+  // Homing sequence takes priority
+  if (homing_active_) {
+    step(false);
+    return;
+  }
+
   // Potential set point error
   if (target_position_ > max_target_position_) {
       packet_out_->set_error(PacketOut::AZIMUTH_COMMAND_OOB);

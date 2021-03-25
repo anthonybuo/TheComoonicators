@@ -23,6 +23,18 @@ class Stepper {
         // Send zero current to the motor
         void idle(void);
 
+        // Start homing sequence
+        void start_home_sequence(void) {
+          homing_active_ = true;
+          // set direction towards home
+          direction_ = -1;
+        }
+
+        // End homing sequence
+        void end_home_sequence(void) {
+          homing_active_ = false;
+        }
+
         // Getters
         volatile unsigned int get_current_position() {
             return current_position_;
@@ -74,6 +86,9 @@ class Stepper {
 
         // Set point position
         volatile unsigned int target_position_ = 0;
+
+        // Homing sequence active
+        volatile bool homing_active_ = false;
 
         // Control pins
         unsigned int pin1_, pin2_, pin3_, pin4_;

@@ -117,10 +117,16 @@ namespace uiApp
             }
 
             if (pkt.switches.cwAzi)
+            {
                 aziElevChart.Series[4].Points.AddXY(chartTime, 0.25);
+                toggle_buttons(true);  // azimuth at a known location
+            }
 
             if (pkt.switches.ccwAzi)
+            {
                 aziElevChart.Series[5].Points.AddXY(chartTime, 0.25);
+                toggle_buttons(true);  // azimuth at a known location
+            }
 
             AddBollingerBands(ref inPackets, 100, 1);
 
@@ -370,6 +376,8 @@ namespace uiApp
             updateOutPacketStream(outPackets[outPacketCount]);
             outPacketCount++;
 
+            // Disable all controls while homing sequence is active since the antenna doesn't keep track of its position
+            toggle_buttons(false);
         }
 
         public static void AddBollingerBands(ref List<InPacket> packetList, int period, int factor)
@@ -484,6 +492,17 @@ namespace uiApp
             port.Write(outPackets[outPacketCount].data, 0, outPackets[outPacketCount].PACKET_LENGTH);
             updateOutPacketStream(outPackets[outPacketCount]);
             outPacketCount++;
+        }
+
+        private void toggle_buttons(bool enable)
+        {
+            sendAziButton.Enabled = enable;
+            sendElevButton.Enabled = enable;
+            sendBothButton.Enabled = enable;
+            homeButton.Enabled = enable;
+            sendBothButton.Enabled = enable;
+            rawPacketButton.Enabled = enable;
+            setAzimuthButton.Enabled = enable;
         }
 
     }

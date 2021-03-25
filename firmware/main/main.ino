@@ -143,6 +143,7 @@ void update_antenna_settings() {
       enable_stepper = true;
       break;
     case PacketIn::GOTO_HOME:
+      stepper.start_home_sequence();
       stepper.set_target_position(STEPPER_HOME_POS_TICKS);
       enable_stepper = true;
       break;
