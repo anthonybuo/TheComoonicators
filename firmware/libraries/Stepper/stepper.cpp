@@ -73,9 +73,9 @@ void Stepper::step(const bool update_position) {
 
 void Stepper::idle(void) {
     // Specific to unipolar configuration
-    analogWrite(pin1_, 255);
-    analogWrite(pin2_, 255);
-    analogWrite(pin3_, 255);
-    analogWrite(pin4_, 255);
+    analogWrite(pin1_, 0);
+    analogWrite(pin2_, 0);
+    analogWrite(pin3_, 0);
+    analogWrite(pin4_, 0);
 }
 
