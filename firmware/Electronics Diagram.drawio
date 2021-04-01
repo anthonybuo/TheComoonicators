@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-04-01T21:37:21.669Z" agent="5.0 (Windows)" etag="shuCnHXxth-BeoMbah9U" version="14.5.4" type="github" pages="2">
+<mxfile host="app.diagrams.net" modified="2021-04-01T21:37:48.512Z" agent="5.0 (Windows)" etag="jzY4yM-SzSDpwgWF5zDb" version="14.5.4" type="github" pages="2">
   <diagram id="C0KFSPyw03zar2ZqgSOU" name="Main Diagram">
     <mxGraphModel dx="2112" dy="1811" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -1234,7 +1234,7 @@
         <mxCell id="nLdEgDPqSKaXQL3VS3aQ-29" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;top=0;left=0;bottom=0;right=0;overflow=hidden;" parent="RKr5C5JM3RLWs615CXEY-37" vertex="1">
           <mxGeometry x="962" width="192" height="61" as="geometry" />
         </mxCell>
-        <mxCell id="VXJKxd5seP9zI9SGDbcv-0" value="&lt;div&gt;Mixed Signal Splitter&lt;/div&gt;&lt;div&gt;GND and VB- Shorted&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="evS4UIgShBcVM7Xw-GjO-1" vertex="1">
+        <mxCell id="VXJKxd5seP9zI9SGDbcv-0" value="&lt;div&gt;Mixed Signal Splitter&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="evS4UIgShBcVM7Xw-GjO-1" vertex="1">
           <mxGeometry x="364" y="-1060" width="169" height="70" as="geometry" />
         </mxCell>
         <mxCell id="VXJKxd5seP9zI9SGDbcv-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.594;exitY=0.018;exitDx=0;exitDy=0;fillColor=#e51400;exitPerimeter=0;endArrow=none;endFill=0;strokeWidth=3;entryX=0.172;entryY=1.029;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#FFB570;" parent="evS4UIgShBcVM7Xw-GjO-1" source="5JDOnI2ConuALXWSD9df-12" target="VXJKxd5seP9zI9SGDbcv-0" edge="1">
