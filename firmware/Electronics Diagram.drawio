@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-04-01T21:42:10.745Z" agent="5.0 (Windows)" etag="yqFbYPMnuqQlRpvWpNIX" version="14.5.4" type="github" pages="2">
+<mxfile host="app.diagrams.net" modified="2021-04-01T21:44:01.086Z" agent="5.0 (Windows)" etag="_jF8hw-Ntt_uk4j__6b-" version="14.5.4" type="github" pages="2">
   <diagram id="C0KFSPyw03zar2ZqgSOU" name="Main Diagram">
     <mxGraphModel dx="2112" dy="1811" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -934,10 +934,10 @@
         <mxCell id="nsksu7WEwV1eWuqIVU7I-53" value="Signals" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;top=0;left=0;bottom=0;right=0;overflow=hidden;fontStyle=1;fontSize=15;" parent="nsksu7WEwV1eWuqIVU7I-21" vertex="1">
           <mxGeometry x="578" width="192" height="62" as="geometry" />
         </mxCell>
-        <mxCell id="nLdEgDPqSKaXQL3VS3aQ-0" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;top=0;left=0;bottom=0;right=0;overflow=hidden;fontStyle=1;fontSize=15;" parent="nsksu7WEwV1eWuqIVU7I-21" vertex="1">
+        <mxCell id="nLdEgDPqSKaXQL3VS3aQ-0" value="Harness Measurements" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;top=0;left=0;bottom=0;right=0;overflow=hidden;fontStyle=1;fontSize=15;" parent="nsksu7WEwV1eWuqIVU7I-21" vertex="1">
           <mxGeometry x="770" width="192" height="62" as="geometry" />
         </mxCell>
-        <mxCell id="nLdEgDPqSKaXQL3VS3aQ-15" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;top=0;left=0;bottom=0;right=0;overflow=hidden;fontStyle=1;fontSize=15;" parent="nsksu7WEwV1eWuqIVU7I-21" vertex="1">
+        <mxCell id="nLdEgDPqSKaXQL3VS3aQ-15" value="Signal Measurements" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;top=0;left=0;bottom=0;right=0;overflow=hidden;fontStyle=1;fontSize=15;" parent="nsksu7WEwV1eWuqIVU7I-21" vertex="1">
           <mxGeometry x="962" width="192" height="62" as="geometry" />
         </mxCell>
         <mxCell id="nsksu7WEwV1eWuqIVU7I-25" value="" style="shape=partialRectangle;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;pointerEvents=0;top=0;left=0;bottom=0;right=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="nsksu7WEwV1eWuqIVU7I-20" vertex="1">
@@ -1000,7 +1000,7 @@
         <mxCell id="nLdEgDPqSKaXQL3VS3aQ-3" value="red 0.3, blk 0.3" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;top=0;left=0;bottom=0;right=0;overflow=hidden;" parent="nsksu7WEwV1eWuqIVU7I-37" vertex="1">
           <mxGeometry x="770" width="192" height="62" as="geometry" />
         </mxCell>
-        <mxCell id="nLdEgDPqSKaXQL3VS3aQ-18" value="red to blk; 77 Ohm. this is impedance of motor driver boards (unplugged and tested DCMD-LP)" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;top=0;left=0;bottom=0;right=0;overflow=hidden;" parent="nsksu7WEwV1eWuqIVU7I-37" vertex="1">
+        <mxCell id="nLdEgDPqSKaXQL3VS3aQ-18" value="red to blk (5V to GND); 77 Ohm. this is impedance of motor driver boards (unplugged and tested DCMD-LP by itself, gave similar results)" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;top=0;left=0;bottom=0;right=0;overflow=hidden;" parent="nsksu7WEwV1eWuqIVU7I-37" vertex="1">
           <mxGeometry x="962" width="192" height="62" as="geometry" />
         </mxCell>
         <mxCell id="nsksu7WEwV1eWuqIVU7I-41" style="shape=partialRectangle;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;pointerEvents=0;top=0;left=0;bottom=0;right=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="nsksu7WEwV1eWuqIVU7I-20" vertex="1">
@@ -1021,7 +1021,7 @@
         <mxCell id="nLdEgDPqSKaXQL3VS3aQ-4" value="blue 0.7, red 0.4" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;top=0;left=0;bottom=0;right=0;overflow=hidden;" parent="nsksu7WEwV1eWuqIVU7I-41" vertex="1">
           <mxGeometry x="770" width="192" height="62" as="geometry" />
         </mxCell>
-        <mxCell id="nLdEgDPqSKaXQL3VS3aQ-19" value="red to blue: out of range" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;top=0;left=0;bottom=0;right=0;overflow=hidden;" parent="nsksu7WEwV1eWuqIVU7I-41" vertex="1">
+        <mxCell id="nLdEgDPqSKaXQL3VS3aQ-19" value="red to blue (VB+ to VB-): out of range (as expected, no short)" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;top=0;left=0;bottom=0;right=0;overflow=hidden;" parent="nsksu7WEwV1eWuqIVU7I-41" vertex="1">
           <mxGeometry x="962" width="192" height="62" as="geometry" />
         </mxCell>
         <mxCell id="nsksu7WEwV1eWuqIVU7I-45" style="shape=partialRectangle;html=1;whiteSpace=wrap;collapsible=0;dropTarget=0;pointerEvents=0;top=0;left=0;bottom=0;right=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="nsksu7WEwV1eWuqIVU7I-20" vertex="1">
