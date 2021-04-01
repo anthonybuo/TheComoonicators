@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-04-01T22:48:03.688Z" agent="5.0 (Windows)" etag="AjZKafal1gH9xgzMMDs3" version="14.5.4" type="github" pages="2">
+<mxfile host="app.diagrams.net" modified="2021-04-01T23:04:06.410Z" agent="5.0 (Windows)" etag="W4HnLQ821_9qguzddt3z" version="14.5.4" type="github" pages="2">
   <diagram id="C0KFSPyw03zar2ZqgSOU" name="Main Diagram">
     <mxGraphModel dx="2112" dy="1811" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -1790,7 +1790,7 @@
         <mxCell id="HPWKWSc4I0PYtzTkOVkk-5" value="Text" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="evS4UIgShBcVM7Xw-GjO-1">
           <mxGeometry x="450" y="-960" width="40" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="HPWKWSc4I0PYtzTkOVkk-8" value="Note: VB- and GND were shorted after testing revealed it fixed grounding issues, which caused the limit switches to fire when anything touched exposed metal. Harnesses are still blue and black in the prototype" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="evS4UIgShBcVM7Xw-GjO-1">
+        <mxCell id="HPWKWSc4I0PYtzTkOVkk-8" value="Note: VB- and GND were shorted after testing revealed it fixed grounding issues, which caused the limit switches to fire when anything touched exposed metal. Conductors are still blue and black in the prototype" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="evS4UIgShBcVM7Xw-GjO-1">
           <mxGeometry x="850" y="-940" width="130" height="190" as="geometry" />
         </mxCell>
         <mxCell id="HPWKWSc4I0PYtzTkOVkk-10" value="" style="endArrow=classic;html=1;strokeWidth=3;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="evS4UIgShBcVM7Xw-GjO-1" source="HPWKWSc4I0PYtzTkOVkk-8" target="HPWKWSc4I0PYtzTkOVkk-1">
