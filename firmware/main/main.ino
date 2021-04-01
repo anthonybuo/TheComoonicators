@@ -129,7 +129,7 @@ ISR(TIMER5_COMPA_vect) {
   }
 
   packet_out.sample_rate = 1000 / TIMER5_ISR_PERIOD_MS;
-  Serial.write(packet_out.serialize(), PacketOut::PACKET_SIZE);
+  //Serial.write(packet_out.serialize(), PacketOut::PACKET_SIZE);
   packet_out.clear_limit_switch();
 }
 
@@ -242,6 +242,8 @@ void loop() {
   else {
     inclination_milli_rad = (atan2(y, z) - PI) * 1000;
   }
+
+  Serial.print(y,6);Serial.print(",");Serial.print(z,6);Serial.print(",");Serial.println(inclination_milli_rad,6);
 
   // Filter the noisy reading
   inclination_milli_rad = LPF.filter(inclination_milli_rad);
