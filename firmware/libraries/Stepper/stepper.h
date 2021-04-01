@@ -66,12 +66,18 @@ class Stepper {
         }
 
         void set_speed(uint16_t speed_mdeg_per_s) {
-            // TODO: make stepper speed calc not ugly
-            // azimuth rotation per step: 0.04 degrees
-            // sys clk: 16MHz
-            // timer1 prescaler: 256
-            // timer1 period = OCR1A
-            OCR1A = (uint16_t)(0.04 * 16000000.0 * 1000.0 / 256.0 / speed_mdeg_per_s);
+          if (speed_mdeg_per_s == 0) {
+            packet_out_->set_error(PacketOut::SPEED_COMMAND_OOB);
+            idle();
+            return;
+          }
+
+          // azimuth rotation per step: 0.04 degrees
+          // sys clk: 16MHz
+          // timer1 prescaler: 256
+          // timer1 period = OCR1A
+          packet_out_->clear_error(PacketOut::SPEED_COMMAND_OOB);
+          OCR1A = (uint16_t)(0.04 * 16000000.0 * 1000.0 / 256.0 / speed_mdeg_per_s);
         }
 
     private:

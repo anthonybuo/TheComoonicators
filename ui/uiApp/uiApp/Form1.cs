@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.IO.Ports;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace uiApp
@@ -19,6 +21,7 @@ namespace uiApp
         Int32 inPacketCount = 0;
         Int32 outPacketCount = 0;
         BoundsChecker bounds_checker = new BoundsChecker();
+        StreamWriter file = new StreamWriter("log.txt");
 
         public const int IN_PACKET_LEN = 9;
         public const int OUT_PACKET_LEN = 9;
@@ -68,15 +71,18 @@ namespace uiApp
             int filledPacketBool;
             do
             {
-                filledPacketBool = inPackets[inPacketCount].unpack(dataReceived);
+                filledPacketBool = inPackets[inPackets.Count - 1].unpack(dataReceived);
                 if(filledPacketBool == 1)
                 {
-                    aziBox.Text = inPackets[inPacketCount].azi.ToString();
-                    elevBox.Text = inPackets[inPacketCount].elev.ToString();
-                    updateChart(inPackets[inPacketCount]);
-                    updatePacketStream(inPackets[inPacketCount]);
-                    updateErrorStream(inPackets[inPacketCount]);
+                    aziBox.Text = inPackets[inPackets.Count - 1].azi.ToString();
+                    elevBox.Text = inPackets[inPackets.Count - 1].elev.ToString();
+                    updateChart(inPackets[inPackets.Count - 1]);
+                    updatePacketStream(inPackets[inPackets.Count - 1]);
+                    updateErrorStream(inPackets[inPackets.Count - 1]);
+                    file.Write(ByteArrayToString(inPackets[inPackets.Count - 1].data));
+                    file.Write('\n');
                     inPacketCount++;
+                    inPackets.RemoveAt(0);
                     inPackets.Add(new InPacket(IN_PACKET_LEN));
                 }
             }
@@ -132,7 +138,7 @@ namespace uiApp
 
             AddBollingerBands(ref inPackets, 100, 1);
 
-            elevSTDEVBox.Text = inPackets[inPacketCount].stdev.ToString();
+            elevSTDEVBox.Text = inPackets[inPackets.Count - 1].stdev.ToString();
         }
 
         private void updatePacketStream(InPacket pkt)
@@ -301,6 +307,15 @@ namespace uiApp
             }
 
             return arr;
+        }
+
+        public static string ByteArrayToString(byte[] ba)
+        // from https://stackoverflow.com/questions/311165/how-do-you-convert-a-byte-array-to-a-hexadecimal-string-and-vice-versa
+        {
+            StringBuilder hex = new StringBuilder(ba.Length * 2);
+            foreach (byte b in ba)
+                hex.AppendFormat("{0:x2}", b);
+            return hex.ToString();
         }
 
         public static int GetHexVal(char hex)
@@ -512,7 +527,6 @@ namespace uiApp
             rawPacketButton.Enabled = enable;
             setAzimuthButton.Enabled = enable;
         }
-
     }
 
     public class Packet

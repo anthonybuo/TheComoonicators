@@ -161,8 +161,8 @@ void update_antenna_settings() {
       enable_dcmotor = true;
       break;
     case PacketIn::GOTO_AZIMUTH:
-      stepper.set_speed(packet_in.speed_hi, packet_in.speed_lo);
       stepper.set_target_position(packet_in.azimuth_hi, packet_in.azimuth_lo);
+      stepper.set_speed(packet_in.speed_hi, packet_in.speed_lo);
       enable_stepper = true;
       break;
     case PacketIn::EMERGENCY_STOP:
