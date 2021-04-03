@@ -272,17 +272,7 @@ namespace uiApp
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            //saveFileDialog1.Title = "Save data to file";
-            //saveFileDialog1.ShowDialog();
-
-            //// If the file name is not an empty string open it for saving.
-            //if (saveFileDialog1.FileName = "")
-            //{
-            //    return;
-            //}
-
-            //System.IO.StreamWriter file = new System.IO.StreamWriter(saveFileDialog1.FileName);
+            file.Flush();
         }
 
         private void clearGraphToolStripMenuItem_Click(object sender, EventArgs e)
@@ -314,8 +304,11 @@ namespace uiApp
         {
             StringBuilder hex = new StringBuilder(ba.Length * 2);
             foreach (byte b in ba)
+            {
                 hex.AppendFormat("{0:x2}", b);
-            return hex.ToString();
+                hex.Append("-");
+            }
+            return hex.ToString().ToUpper().TrimEnd(new char[] { '-' });
         }
 
         public static int GetHexVal(char hex)
