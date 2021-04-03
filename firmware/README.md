@@ -6,14 +6,13 @@ Set your Arduino sketchbook location to this directory. Install the following Ar
 
 * LIS3DHTR
 
-Select the "no line ending" option on the Arduino serial monitor.
+## Deployment
+
+Use the Arduino IDE to build and deploy the code.
 
 ## Testing
 
-Unfortunately, the Arduio serial monitor can't send raw bytes (as far as I know),
-so a terminal emulator like RealTerm can be used to send a byte string to the
-Arduino. Note that the terminal emulator should be disconnected from the serial
-port while uploading Arduino firmware through the Arduino IDE.
+Use the UI application to communicate with the Arduino while it is running.
 
 ## Pinout
 
