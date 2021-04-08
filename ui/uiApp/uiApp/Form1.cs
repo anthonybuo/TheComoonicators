@@ -265,7 +265,7 @@ namespace uiApp
             }
             catch (System.FormatException)
             {
-                aziSetpointBox.Text = "0";
+                elevSetpointBox.Text = "0";
                 MessageBox.Show("Input must be numerical");
             }
         }
