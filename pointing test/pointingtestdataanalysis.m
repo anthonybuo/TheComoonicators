@@ -20,6 +20,7 @@ end
 laserAngles = zeros(15, 6);
 linError = zeros(size(laserAngles));
 angError = zeros(size(laserAngles));
+aziError = zeros(15, 3);
 absAngError = zeros(size(aziError));
 
 for i = [1, 3, 5]
@@ -62,7 +63,7 @@ ylabel("Trials");
 
 figure;
 h1 = histogram(absAngErrorUnsorted * 180/pi);
-title("Absolute Error, 3\sigma = " + 3*std(absAngErrorUnsorted * 180 / pi));
+title("Absolute Error, +/-" + mean(absAngErrorUnsorted)*180/pi + " degrees, 3\sigma = " + 3*std(absAngErrorUnsorted * 180 / pi));
 xlabel("Error (degrees)");
 ylabel("Trials");
-h1.BinWidth = 0.1;
+h1.BinWidth = 0.25;

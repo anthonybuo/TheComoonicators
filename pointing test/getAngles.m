@@ -1,6 +1,15 @@
 function angles = getAngles(xdes, ydes, d_o1, d_12, d_23, d_ow)
-%UNTITLED2 Summary of this function goes here
-%   
+% This function calculates the azimuth and elevation angles required to
+% point the antenna at a specific position on a wall.
+%
+% inputs:
+% xdes, ydes: scalar x and y position on wall
+% d_o1: azimuth (origin) to hinge link length (scalar)
+% d_12: hinge to laser link length in antenna plane (scalar)
+% d_23: laser base to laser tip link length (scalar)
+% d_ow: azimuth (origin) to wall length in z vector (scalar)
+% 
+% outputs: [azimuth angle in radians, elevation angle in radians]
 angles0 = [0, pi/2];
 
 ydes = ydes + d_12;
