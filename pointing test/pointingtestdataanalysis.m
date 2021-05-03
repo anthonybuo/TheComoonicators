@@ -29,7 +29,7 @@ for i = [1, 3, 5]
         laserAngles(j, i:i+1) = getAngles(data(j,i+2),data(j,i+3),d_o1, d_12, d_23, d_ow);
         angError(j,i:i+1) = targetAngles(j,:) - laserAngles(j, i:i+1);
         linError(j,i:i+1) = targets(j,:) - data(j,i+2:i+3);
-        absAngError(j,ii) = getAngError(targets(j,1), targets(j,2), linError(j, 1), linError(j,2),d_o1, d_12, d_23, d_ow);
+        absAngError(j,ii) = getAngError(targets(j,1), targets(j,2), linError(j, i), linError(j,i+1),d_o1, d_12, d_23, d_ow);
     end
 end
 
